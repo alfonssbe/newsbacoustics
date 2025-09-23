@@ -1,0 +1,471 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "mysql"
+  url = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Roles {
+  id              String    @id @default(uuid())
+  userId          String    // Foreign Key to Brand
+  user            Users     @relation("UsersToRoles", fields: [userId], references: [id])
+  brandId         String
+  brandName       String    @db.Text    @default("")
+  
+  @@index([userId])
+}
+
+model Users {
+  id              String    @id @default(uuid())
+  name            String    @db.Text
+  email           String    @db.Text
+  password        String    @db.Text
+  role            Roles[]   @relation("UsersToRoles")
+  expiredAt       String    @default("")
+  refresh_token   String    @db.Text
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Brand {
+  id              String        @id @default(uuid())
+  name            String        @db.Text
+  userId          String
+  products        Product[]     @relation("BrandToProduct")
+  sizes           Size[]        @relation("BrandToSize")
+  allcategories   AllCategory[] @relation("BrandToAllCategory")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Product {
+  id          String    @id @default(uuid())
+  brandId     String    // Foreign Key to Brand
+  brand       Brand     @relation("BrandToProduct", fields: [brandId], references: [id])
+  name        String    @db.Text
+  slug        String    @db.Text
+  description String    @db.Text
+  cover_img   Cover_Image[]
+  featuredDesc  String  @db.Text  @default("")
+  isFeatured  Boolean   @default(false)
+  isArchived  Boolean   @default(false)
+  isCustom  Boolean   @default(false)
+  isKits    Boolean   @default(false)
+  isCoax    Boolean   @default(false)
+  isNewProduct  Boolean @default(false)
+  oemQuantity   String  @db.Text  @default("")
+  navbarNotes   String  @db.Text  @default("")
+  sizeId      String    
+  size        Size      @relation(fields: [sizeId], references: [id])
+  images_catalogues      Image_Catalogues[]
+  drawing_img Drawing_Image[]
+  graph_img   Graph_Image[]
+  featured_img   Featured_Image[]
+  allCat      AllProductCategory[]
+  kitsFinishing  kitsFinishing[]
+  multipleDatasheetProduct multipleDatasheetProduct[]
+  multipleFRDZMAFiles multipleFRDZMAFiles[]
+  multiple3DModels multiple3DModels[]
+  similarProducts   SimilarProducts[]
+  productsUsedInKits  ProductsUsedInKits[]
+  priority    String    @default("")
+  specId      String    @default("")
+  customSpecId  String    @default("")
+  updatedBy   String    @db.Text  @default("")
+  specification    Specification  @relation(fields: [specId], references: [id], onDelete: Cascade)
+  customSpecification    Custom_Specification  @relation(fields: [customSpecId], references: [id], onDelete: Cascade)
+  specSBAudienceId  String  @default("")
+  specificationSBAudience    SpecificationSBAudience  @relation(fields: [specSBAudienceId], references: [id], onDelete: Cascade)
+  specSBAudienceHFId  String  @default("")
+  SpecificationHFSBAudience    SpecificationHFSBAudience  @relation(fields: [specSBAudienceHFId], references: [id], onDelete: Cascade)
+  hornsspecSBAudienceId  String  @default("")
+  hornsspecificationSBAudience    HornsSpecificationSBAudience  @relation(fields: [hornsspecSBAudienceId], references: [id], onDelete: Cascade)
+  thielesmallparametersSBAudienceId  String  @default("")
+  thieleSmallParametersSBAudience    ThieleSmallParameters  @relation(fields: [thielesmallparametersSBAudienceId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([brandId])
+  @@index([sizeId])
+  @@index([specId])
+  @@index([customSpecId])
+  @@index([specSBAudienceId])
+  @@index([specSBAudienceHFId])
+  @@index([hornsspecSBAudienceId])
+  @@index([thielesmallparametersSBAudienceId])
+}
+
+model SimilarProducts {
+  id          String    @id @default(uuid())
+  productId   String   // Foreign Key to Product
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  similarProductId  String
+  
+  @@index([productId])
+
+}
+
+model Size {
+  id          String    @id @default(uuid())
+  brandId     String    // Foreign Key to Brand
+  brand       Brand     @relation("BrandToSize", fields: [brandId], references: [id])
+  name        String    @db.Text
+  value       String    @db.Text
+  updatedBy   String    @default("")
+  products    Product[] // Relation to Product model
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([brandId])
+}
+
+model AllCategory {
+  id          String    @id @default(uuid())
+  brandId     String    // Foreign Key to Brand
+  brand       Brand     @relation("BrandToAllCategory", fields: [brandId], references: [id])
+  type        String    //Category, Sub Category, Sub Sub Category
+  name        String    @db.Text
+  slug        String    @db.Text
+  description String    @db.Text
+  thumbnail_url String  @db.Text
+  updatedBy   String    @default("")
+  // products    Product[] // Relation to Product model
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([brandId])
+}
+
+model Image_Catalogues {
+  id          String   @id @default(uuid())
+  productId   String   // Foreign Key to Product
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String   @db.Text
+  name        String   @db.Text @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([productId])
+}
+
+model Cover_Image {
+  id          String   @id @default(uuid())
+  productId   String   // Foreign Key to Product
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([productId])
+}
+
+model Drawing_Image {
+  id          String   @id @default(uuid())
+  productId   String   // Foreign Key to Product
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([productId])
+}
+
+model Graph_Image {
+  id          String   @id @default(uuid())
+  productId   String   // Foreign Key to Product
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([productId])
+}
+
+model Featured_Image {
+  id          String   @id @default(uuid())
+  productId   String   // Foreign Key to Product
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([productId])
+}
+
+model Specification {
+  id          String    @id @default(uuid())
+  impedance   String
+  dc_resistance_re  String
+  coil_inductance_le  String
+  effective_piston_area_sd  String
+  voice_coil_diameter String
+  voice_coil_height String
+  air_gap_height  String
+  linear_coil_travel_pp String
+  moving_mass_mms String
+  free_air_resonance_fs String
+  sensitivity String
+  mechanical_q_factor_qms String
+  electrical_q_factor_qes String
+  total_q_factor_qts  String
+  force_factor_bi String
+  rated_power_handling  String
+  magnetic_flux_density String
+  magnet_weight String
+  net_weight  String
+  equivalent_volume_vas String
+  compliance_cms  String
+  mechanical_loss_rms String
+  recommended_frequency_range String
+  max_mechanical_cone_excursion_xmech String
+  custom_note String @db.Text @default("")
+  cone_material String @db.Text @default("")
+  dome_material String @db.Text @default("")
+  searchbox_desc String @db.Text @default("")
+  mounting_diameter String @db.Text @default("")
+  productId   String   // Foreign Key to Product
+  product     Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Custom_Specification {
+  id          String    @id @default(uuid())
+  customDesc    String  @db.Text
+  frequency_range   String  @default("")
+  sensitivity String  @default("")
+  nominal_impedance String  @default("")
+  dc_resistance_re  String  @default("")
+  voice_coil_diameter String  @default("")
+  voice_coil_height String  @default("")
+  air_gap_height  String  @default("")
+  free_air_resonance_fs String  @default("")
+  rated_power_handling  String  @default("")
+  magnetic_flux_density String  @default("")
+  magnet_weight String  @default("")
+  net_weight  String  @default("")
+  max_spl String  @default("")
+  recommended_amplifier String  @default("")
+  crossover_frequency String  @default("")
+  enclosure_type  String  @default("")
+  port_tuning_frequency String  @default("")
+  driver_units  String  @default("")
+  cabinet_material  String  @default("")
+  speaker_dimension String  @default("")
+  custom_note_for_spec String @db.Text @default("")
+  dome_material String @db.Text @default("")
+  productId   String   // Foreign Key to Product
+  product     Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model multipleDatasheetProduct {
+  id          String    @id @default(uuid())
+  productId  String   // Foreign Key to Product
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String    @db.Text  @default("")
+  name        String    @db.Text  @default("")
+  
+  @@index([productId])
+
+}
+
+model multipleFRDZMAFiles {
+  id          String    @id @default(uuid())
+  productId  String   // Foreign Key to Product
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String    @db.Text  @default("")
+  name        String    @db.Text  @default("")
+  
+  @@index([productId])
+
+}
+
+model multiple3DModels {
+  id          String    @id @default(uuid())
+  productId  String   // Foreign Key to Product
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String    @db.Text  @default("")
+  name        String    @db.Text  @default("")
+  
+  @@index([productId])
+
+}
+
+model kitsFinishing {
+  id          String    @id @default(uuid())
+  productId  String   // Foreign Key to Product
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String    @db.Text  @default("")
+  name        String    @db.Text  @default("")
+  
+  @@index([productId])
+
+}
+
+model allFinishing {
+  id    String  @id @default(uuid())
+  name  String  @db.Text
+  url   String  @db.Text
+}
+
+model AllProductCategory {
+  id          String    @id @default(uuid())
+  productId   String   // Foreign Key to Product
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  categoryId  String
+  type        String    //Category, Sub Category, Sub Sub Category
+  name        String    @db.Text
+  slug        String    @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@index([productId])
+}
+
+model SpecificationSBAudience {
+  id          String    @id @default(uuid())
+  nominal_impedance   String
+  minimum_impedance  String
+  aes_power_handling  String
+  maximum_power_handling  String
+  sensitivity String
+  frequency_range String
+  voice_coil_diameter  String
+  winding_material String
+  former_material String
+  winding_depth String
+  magnetic_gap_depth String
+  flux_density String
+  magnet String
+  basket_material  String
+  demodulation String
+  cone_surround  String
+  net_air_volume_filled_by_driver String
+  spider_profile String
+  weather_resistant  String
+  rdc String
+  recommended_crossover_frequency String
+  diaphragm_material String
+  phase_plug_design String
+  total_exit_angle String
+  net_air_volume_filled_by_hf_driver String
+  nominal_throat_diameter String
+  overall_diameter  String
+  ninety_degrees_mounting_holes_diameter  String
+  depth String
+  net_weight  String
+  shipping_box  String
+  gross_weight  String
+  replacement_diaphragm String
+  bolt_circle_diameter  String
+  baffle_cutout_diameter  String
+  mounting_depth  String
+  flange_and_gasket_thickness String
+  recone_kit  String
+  custom_note String @db.Text @default("")
+  productId   String   // Foreign Key to Product
+  product     Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model SpecificationHFSBAudience {
+  id          String    @id @default(uuid())
+  nominal_impedance   String
+  minimum_impedance  String
+  aes_power_handling  String
+  maximum_power_handling  String
+  sensitivity String
+  frequency_range String
+  voice_coil_diameter  String
+  winding_material String
+  former_material String
+  winding_depth String
+  magnetic_gap_depth String
+  flux_density String
+  magnet String
+  basket_material  String
+  demodulation String
+  cone_surround  String
+  productId   String   // Foreign Key to Product
+  product     Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model ThieleSmallParameters {
+  id  String @id @default(uuid())
+  fs String
+  re  String
+  qes String
+  qms String
+  qts String
+  vas String
+  sd String
+  x_max String
+  xdamage String
+  mms String
+  bi String
+  le String
+  cms String
+  rms String
+  eta_zero String
+  ebp String
+  productId   String   // Foreign Key to Product
+  product     Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model HornsSpecificationSBAudience {
+  id          String    @id @default(uuid())
+  nominal_coverage_horizontal String
+  nominal_coverage_vertical String
+  directivity_factor  String
+  directivity_index   String
+  sensitivity_on_driver String
+  frequency_response  String
+  throat_diameter String
+  minimum_recommended_crossover String
+  horn_material String
+  horn_finish String
+  overall_dimensions_mouth_height String
+  overall_dimensions_mouth_width String
+  overall_dimensions_length String
+  net_weight  String
+  gross_weight  String
+  carton_dimensions String
+  mechanical_connection_of_driver String
+  baffle_cutout_dimensions_front_mount_horizontal String
+  baffle_cutout_dimensions_front_mount_vertical String
+  custom_note String @db.Text @default("")
+  productId   String   // Foreign Key to Product
+  product     Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model menuPriority {
+  id    String  @id @default(uuid())
+  productId  String  @db.Text
+  priorityNumber   String  @db.Text
+  categoryId  String  @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model ProductsUsedInKits {
+  id          String    @id @default(uuid())
+  productId   String   // Foreign Key to Product
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productUsedInKitsId  String
+  
+  @@index([productId])
+
+}
