@@ -1,20 +1,21 @@
 "use client"
 
 import { usePathname } from 'next/navigation';
-import SearchBox from '../../../components/searchbox';
+import SearchBox from './searchbox';
 import Link from 'next/link';
 import Image from 'next/image';
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from '../../../components/ui/navigation-menu';
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '../../../components/ui/sheet';
-import { Button } from '../../../components/ui/button';
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from './ui/navigation-menu';
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from './ui/sheet';
+import { Button } from './ui/button';
 import { ChevronRight, Loader2, Menu } from 'lucide-react';
-import { NavbarComponents, NavbarProducts, NewProduct, PriorityMenu } from '../types';
-import { getAllNavbarContentUtils } from '../utils/get-data';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordionmobilemenu';
-import getAllNewProducts from '../actions/get-all-new-products';
-import SearchBoxNavbar from '../../../components/searchboxnavbar';
-import { DriversMenu, EmptyMenu, KitsMenu, MidrangesSubMenu, MidwoofersSubMenu, OEMMidwoofersSubMenu, OEMSubMenu, SubwoofersDefaultSubMenu, TweetersSubMenu, WidebandersDefaultSubMenu, WoofersSubMenu } from '@/lib/navbar-content';
+import { NavbarComponents, NavbarProducts, NewProduct, PriorityMenu } from '../app/(sbacoustics)/types';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../app/(sbacoustics)/components/ui/accordionmobilemenu';
+import getAllNewProducts from '../app/(sbacoustics)/actions/get-all-new-products';
+import SearchBoxNavbar from './searchboxnavbar';
+import { DriversMenu, DriversSBAudienceMenu, EmptyMenu, KitsMenu, MidrangesSubMenu, MidwoofersSubMenu, OEMMidwoofersSubMenu, OEMSubMenu, SubwoofersDefaultSubMenu, TweetersSubMenu, WidebandersDefaultSubMenu, WoofersSubMenu } from '@/lib/navbar-content';
 import { useEffect, useState } from 'react';
+import { getHref } from '@/app/utils/getHref';
+import getAllNavbarContent from '@/app/(sbacoustics)/actions/get-all-navbar-content';
 
 const styledDropdown = "text-sm px-1 py-2 text-foreground"
 
@@ -34,31 +35,233 @@ function Navbar() {
   const [_, setLoading] = useState(true);
   const [_2, setOpenedContentForBg] = useState(false);
   
-  
   //FOR SEARCHING SUB MENU CONTENT
   const [driverSubMenuMapping, setDriverSubMenuMapping] = useState<Record<string, NavbarComponents[]>>({});
   const [driverSubSubMenuMapping, setDriverSubSubMenuMapping] = useState<Record<string, NavbarComponents[]>>({});
   const [driverSubSubSubMenuMapping, setDriverSubSubSubMenuMapping] = useState<Record<string, NavbarComponents[]>>({});
   const [kitsSubMenuMapping, setKitsSubMenuMapping] = useState<Record<string, NavbarComponents[]>>({});
 
-
-
   //KITS
   const [kitMenu, setKitMenu] = useState<NavbarComponents[]>(EmptyMenu)
   const [kitssubMenu, setKitsSubMenu] = useState<NavbarComponents[]>([])
-
 
   //NEW PRODUCTS
   const [newProductsMenu, setnewProductsMenu] = useState<NewProduct[]>([])
   const [newKitsMenu, setnewKitsMenu] = useState<NewProduct[]>([])
 
+  
+  const pathname = usePathname()
+  const [hoveredDriverMenu, setHoveredDriverMenu] = useState("");
+  const [hoveredDriverSubMenu, setHoveredDriverSubMenu] = useState("");
+  const [hoveredDriverSubSubMenu, setHoveredDriverSubSubMenu] = useState("");
+  const [hoveredKitsMenu, setHoveredKitsMenu] = useState("");
+  const [height, setHeight] = useState<number>(700);
+  const [navbarBg, setNavbarBg] = useState(false);
+  const [isLgScreen, setIsLgScreen] = useState(false);
+  const [tempPathname, setTempPathname] = useState(getBrandFromPathname(pathname));
+  const [changeBrand, setChangeBrand] = useState(false);
+  const [firstMenu, setFirstMenu] = useState<NavbarComponents[]>([]);
+
+  function getBrandFromPathname(pathname: string) {
+    const parts = pathname.split("/").filter(Boolean); // remove empty strings
+    // if there’s no part → default brand
+    if (parts.length === 0) return "default";
+    // if first part is 'drivers' → also default brand
+    if (parts[0] === "drivers") return "default";
+    // else first part is brand name
+    return parts[0];
+  }
+
+  useEffect(() => {
+    const currentBrand = getBrandFromPathname(pathname);
+
+    if (currentBrand !== tempPathname) {
+      setTempPathname(currentBrand);
+      setChangeBrand((prev) => !prev); // toggles true/false each time
+    }
+  }, [pathname]); // dependency is pathname but we gate by comparing brand
+
   useEffect(() => { 
 
+    if(pathname.includes('sbaudience')){
+      setFirstMenu(DriversSBAudienceMenu)
+    //SB AUDIENCE
+    let tempSubwoofersSBAudience: NavbarComponents[] = []
+    let tempHornSBAudience: NavbarComponents[] = []
+    let tempCoaxialsSBAudience: NavbarComponents[] = []
+    let tempOpenBaffleDriversSBAudience: NavbarComponents[] = []
+    let tempWoofersSBAudience: NavbarComponents[] = []
+    let tempCompressionDriversSBAudience: NavbarComponents[] = []
+
+    //CONDITIONS
+    const SubwoofersSBAudienceConditions = [
+      { type: 'Category', name: 'Drivers' },
+      { type: 'Sub Category', name: 'Subwoofers' }
+    ];
+    const HornSBAudienceConditions = [
+      { type: 'Category', name: 'Drivers' },
+      { type: 'Sub Category', name: 'Horn' }
+    ];
+    const CoaxialsSBAudienceConditions = [
+      { type: 'Category', name: 'Drivers' },
+      { type: 'Sub Category', name: 'Coaxials' }
+    ];
+    const OpenBaffleDriversSBAudienceConditions = [
+      { type: 'Category', name: 'Drivers' },
+      { type: 'Sub Category', name: 'Open Baffle Drivers' }
+    ];
+    const WoofersSBAudiencesConditions = [
+      { type: 'Category', name: 'Drivers' },
+      { type: 'Sub Category', name: 'Woofers' }
+    ];
+    const CompressionDriversSBAudienceConditions = [
+      { type: 'Category', name: 'Drivers' },
+      { type: 'Sub Category', name: 'Compression Drivers' }
+    ];
+
+
+    const fetchData = async () => {
+      try {
+        const [navbarData, priority]: [NavbarProducts[], PriorityMenu[]] = await getAllNavbarContent(pathname);
+        const [tempNewKits, tempNewProduct]: [NewProduct[], NewProduct[]] = await getAllNewProducts(pathname);
+        // setValue(navbarData);
+        setDriversSubMenu(EmptyMenu)
+
+
+        const conditionsAndTemps = [
+          { conditions: SubwoofersSBAudienceConditions, tempArray: tempSubwoofersSBAudience },
+          { conditions: HornSBAudienceConditions, tempArray: tempHornSBAudience },
+          { conditions: CoaxialsSBAudienceConditions, tempArray: tempCoaxialsSBAudience },
+          { conditions: OpenBaffleDriversSBAudienceConditions, tempArray: tempOpenBaffleDriversSBAudience },
+          { conditions: WoofersSBAudiencesConditions, tempArray: tempWoofersSBAudience },
+          { conditions: CompressionDriversSBAudienceConditions, tempArray: tempCompressionDriversSBAudience }
+        ];
+    
+        // Loop through navbarData and check every condition
+        navbarData.forEach((product) => {
+          conditionsAndTemps.forEach(({ conditions, tempArray }) => {
+            const meetsConditions = conditions.every(condition =>
+              product.categories.some(cat => cat.type === condition.type && cat.name === condition.name)
+            );
+
+            if (meetsConditions) {
+
+              const productPriority = priority.find((val) =>
+                val.productName === product.name &&
+                conditions.find((cat) => cat.name === val.categoryName)
+              )?.priority ?? '999';
+
+              const newItem = {
+                title: product.name,
+                href: product.href,
+                parent: "",
+                url: product.url,
+                imageDesc: product.navbarNotes,
+                priority: productPriority,
+                newProd: product.newProduct,
+                hasProduct: false
+              };
+
+              // Insert `newItem` into `tempArray` at correct sorted position
+              const indexToInsert = tempArray.findIndex(
+                (item) => Number(productPriority) < Number(item.priority)
+              );
+
+              if (indexToInsert === -1) {
+                tempArray.push(newItem);
+              } else {
+                tempArray.splice(indexToInsert, 0, newItem);
+              }
+            }
+          });
+        });
+
+        //NEW PRODUCTS
+        setnewProductsMenu(tempNewProduct)
+        setnewKitsMenu(tempNewKits)
+
+
+
+        const submenuMappingDriver: Record<string, NavbarComponents[]> = {
+          "Subwoofers-Drivers": tempSubwoofersSBAudience,
+          "Horn-Drivers": tempHornSBAudience,
+          "Coaxials-Drivers": tempCoaxialsSBAudience,
+          "Open Baffle Drivers-Drivers": tempOpenBaffleDriversSBAudience,
+          "Woofers-Drivers": tempWoofersSBAudience,
+          "Compression Drivers-Drivers": tempCompressionDriversSBAudience,
+        };
+        setDriverSubMenuMapping(submenuMappingDriver)
+
+
+        // const subsubmenuMappingDriver: Record<string, NavbarComponents[]> = {
+        //   "Dome Tweeters-Tweeters": tempDomeTweeter,
+        //   "Ring Radiators-Tweeters": tempRingRadiators,
+        //   "SATORI Tweeters-Tweeters": tempSATORITweeters,
+        //   "Full Ranges-Widebanders / Full Ranges": tempFullRanges,
+        //   "NRX Midranges-Midranges": tempNRXMidranges,
+        //   "SATORI Midranges-Midranges": tempSATORIMidranges,
+        //   "CAC Midwoofers-Midwoofers": tempCACMidwoofers,
+        //   "CRC Midwoofers-Midwoofers": tempCRCMidwoofers,
+        //   "MFC Midwoofers-Midwoofers": tempMFCMidwoofers,
+        //   "NBAC Midwoofers-Midwoofers": tempNBACMidwoofers,
+        //   "NRX Midwoofers-Midwoofers": tempNRXMidwoofers,
+        //   "PAC Midwoofers-Midwoofers": tempPACMidwoofers,
+        //   "PFCR Midwoofers-Midwoofers": tempPFCRMidwoofers,
+        //   "SATORI Midwoofers-Midwoofers": tempSATORIMidwoofers,
+        //   "SFCR Midwoofers-Midwoofers": tempSFCRMidwoofers,
+        //   "CAC Woofers-Woofers": tempCACWoofers,
+        //   "PFCR Woofers-Woofers": tempPFCRWoofers,
+        //   "SFCL Woofers-Woofers": tempSFCLWoofers,
+        //   "NRX Woofers-Woofers": tempNRXWoofers,
+        //   "NBAC Woofers-Woofers": tempNBACWoofers,
+        //   "SATORI Woofers-Woofers": tempSATORIWoofers,
+        //   "Shallow Subwoofers-Subwoofers": tempShallowSubwoofers,
+        //   "Tweeters OEM-OEM": tempTweetersOEM,
+        //   "Midranges OEM-OEM": tempMidrangesOEM,
+        //   "Midwoofers OEM-OEM": OEMMidwoofersSubMenu,
+        //   "Woofers OEM-OEM": tempWoofersOEM,
+        //   "Subwoofers OEM-OEM": tempSubwoofersOEM,
+        //   "Shallow Subwoofers OEM-OEM": tempShallowSubwoofersOEM,
+        //   "Passive Radiators OEM-OEM": tempPassiveRadiatorsOEM,
+        //   "Coaxials OEM-OEM": tempCoaxialsOEM,
+        // };
+        // setDriverSubSubMenuMapping()
+
+
+        // const subSubSubMenuMappingDriver: Record<string, NavbarComponents[]> = {
+        //   "NBAC Midwoofers OEM-OEM Midwoofers": tempNBACMidwoofersOEM,
+        //   "NRX Midwoofers OEM-OEM Midwoofers": tempNRXMidwoofersOEM,
+        //   "PFCR Midwoofers OEM-OEM Midwoofers": tempPFCRMidwoofersOEM,
+        //   "SATORI Midwoofers OEM-OEM Midwoofers": tempSATORIMidwoofersOEM,
+        // };
+        // setDriverSubSubSubMenuMapping(subSubSubMenuMappingDriver)
+
+
+        // const submenuMappingKits: Record<string, NavbarComponents[]> = {
+        //   "SB Acoustics Kits-Kits": tempSBAcousticsKits,
+        //   "Open Source Kits-Kits": tempOpenSourceKits,
+        //   "Accessories-Kits": tempAccessories,
+        // };
+        // setKitsSubMenuMapping(submenuMappingKits)
+
+
+
+      } catch (error) {
+        console.error('Error fetching navbar products:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+    }
+    else{
+          //SB ACOUSTICS
+          
+      setFirstMenu(DriversMenu)
     let tempDomeTweeter: NavbarComponents[] = []
     let tempRingRadiators: NavbarComponents[] = []
     let tempSATORITweeters: NavbarComponents[] = []
-    
-
+  
     let tempNRXMidranges: NavbarComponents[] = []
     let tempSATORIMidranges: NavbarComponents[] = []
 
@@ -92,7 +295,6 @@ function Navbar() {
     let tempNRXMidwoofersOEM: NavbarComponents[] = []
     let tempPFCRMidwoofersOEM: NavbarComponents[] = []
     let tempSATORIMidwoofersOEM: NavbarComponents[] = []
-
 
     //TEST
     let tempWidebanders: NavbarComponents[] = []
@@ -278,8 +480,6 @@ function Navbar() {
       { type: 'Sub Category', name: 'OEM' },
       { type: 'Sub Sub Category', name: 'SATORI Midwoofers OEM' }
     ];   
-    
-
 
     
     //TEST
@@ -317,9 +517,9 @@ function Navbar() {
     ];
 
 
-    async function fetchData() {
+    const fetchData = async () => {
       try {
-        const [navbarData, priority]: [NavbarProducts[], PriorityMenu[]] = await getAllNavbarContentUtils(pathname);
+        const [navbarData, priority]: [NavbarProducts[], PriorityMenu[]] = await getAllNavbarContent(pathname);
         const [tempNewKits, tempNewProduct]: [NewProduct[], NewProduct[]] = await getAllNewProducts(pathname);
         // setValue(navbarData);
         setDriversSubMenu(EmptyMenu)
@@ -495,11 +695,12 @@ function Navbar() {
       }
     }
     fetchData();
+    }
+
 
     
-  }, []);
+  }, [changeBrand]);
 
-  const [isLgScreen, setIsLgScreen] = useState(false);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 1024px)');
@@ -512,12 +713,6 @@ function Navbar() {
       mediaQuery.removeEventListener('change', handleResize);
     };
   }, []);
-  const pathname = usePathname()
-  const [hoveredDriverMenu, setHoveredDriverMenu] = useState("");
-  const [hoveredDriverSubMenu, setHoveredDriverSubMenu] = useState("");
-  const [hoveredDriverSubSubMenu, setHoveredDriverSubSubMenu] = useState("");
-  const [hoveredKitsMenu, setHoveredKitsMenu] = useState("");
-  const [height, setHeight] = useState<number>(700);
 
 
   function searchSubMenu(name: string, parent: string) { 
@@ -526,8 +721,6 @@ function Navbar() {
       setDriversSubMenu(driverSubMenuMapping[key]);
     }
   }  
-
-
   function searchSubSubMenu(name: string, parent: string) {
     const key = `${name}-${parent}`;
     if (driverSubSubMenuMapping[key]) {
@@ -538,20 +731,15 @@ function Navbar() {
       setHoveredKitsMenu("");
     }
   }
-
-
   function searchKitsMenu(name: string, parent: string) {
     const key = `${name}-${parent}`;
     if (kitsSubMenuMapping[key]) {
       setKitsSubMenu(kitsSubMenuMapping[key]);
     }
   }
-
-
   function searchSubSubSubMenu(name: string, parent: string) {
     const key = `${name}-${parent}`;
     if (driverSubSubSubMenuMapping[key]) {
-      // console.log("MASOK 3")
       setDriversSubSubSubMenu(driverSubSubSubMenuMapping[key]);
       setHoveredDriverSubSubMenu(name);
       setHoveredKitsMenu("");
@@ -559,9 +747,7 @@ function Navbar() {
   }
 
   
-  const [navbarBg, setNavbarBg] = useState(false);
 
-  // Handle scrolling and changing the background of the navbar
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 0) { // Change this value based on when you want the background to change
@@ -593,8 +779,6 @@ function Navbar() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
-    
-
 
   useEffect(() => {
     // Function to update height
@@ -618,12 +802,12 @@ function Navbar() {
       <div className="flex items-center justify-between">
         <div className="w-1/4 flex">
           <Link
-            href={pathname.includes('sbaudience') ? '/sbaudience' : '/'}
+            href={getHref(pathname, '')}
             className="flex items-center"
           >
             <div className="relative overflow-hidden flex items-center justify-center h-full max-w-[150px]">
               <Image
-                src={pathname.includes('sbaudience') ? '/images/sbaudience/logo_sbaudience.png' : '/images/sbacoustics/logo_sbacoustics_black_clean.webp'}
+                src={pathname.includes('sbaudience') ? '/images/sbaudience/logo_sbaudience.webp' : '/images/sbacoustics/logo_sbacoustics_black_clean.webp'}
                 className="cursor-pointer max-w-[150px] h-8 z-101 object-contain"
                 alt={pathname.includes('sbaudience') ? "Logo of SB Audience" : "Logo of SB Acoustics"}
                 width={200}
@@ -638,7 +822,7 @@ function Navbar() {
             <NavigationMenuList className="flex items-center">
               <NavigationMenuItem>
                 {/* Drivers Menu Trigger */}
-                <Link href="/drivers" passHref>
+                <Link href={getHref(pathname, 'drivers')} passHref>
                   <div className="p-0 relative z-101">
                     <NavigationMenuTrigger
                       className={navigationMenuTriggerStyle().concat(
@@ -684,8 +868,10 @@ function Navbar() {
 
 
 
-                        {DriversMenu.map((driver, index) => (
-                          <NavigationMenuLink href={driver.href} key={index}>
+                        
+                        
+                        {firstMenu.map((driver, index) => (
+                          <NavigationMenuLink href={getHref(pathname, driver.href)} key={index}>
                             <div
                               onMouseEnter={() => {
                                 setHoveredDriverMenu(driver.title);
@@ -736,7 +922,7 @@ function Navbar() {
                             >
                               {products.parent===""? 
                                 // <Link href={products.href} passHref>
-                                  <NavigationMenuLink href={products.href}>
+                                  <NavigationMenuLink href={getHref(pathname, products.href)}>
                                     <div className={`${styledDropdown} hover:text-primary ${activedriverhovered === products.title? 'text-primary': ''}`} onMouseEnter={() => (setDriversSubMenuUrl(products.url), setPictureSlugUrl(products.href), setPictureDesc(products.imageDesc), setactivedriverhovered(products.title), setDriversSubSubMenu(EmptyMenu), setHoveredDriverSubMenu(''), setnameForHoveredPicture(products.title), setDriversSubSubMenuUrl('') ,setDriversSubSubSubMenuUrl(''))} >
                                     {products.newProd ? <>{products.title.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div></> : products.title}
                                     </div>
@@ -744,7 +930,7 @@ function Navbar() {
                                 // </Link>
                               :
                                 // <Link href={products.href} passHref>
-                                  <NavigationMenuLink href={products.href}>
+                                  <NavigationMenuLink href={getHref(pathname, products.href)}>
                                     <div className={`${styledDropdown} flex justify-between items-center align-middle ${hoveredDriverSubMenu===products.title ? 'text-primary' : ''}`} onMouseEnter={()=>(setDriversSubSubMenuUrl(''), setDriversSubSubSubMenuUrl(''), setactivedriverhovered(''))}>
                                       {products.title}
                                       <ChevronRight size={15} className={`pb-1 ${hoveredDriverSubMenu===products.title ? 'text-primary' : ''}`}/>
@@ -768,7 +954,7 @@ function Navbar() {
                               {products.parent===""? 
                                 products.title != ''?
                                   // <Link href={products.href} passHref>
-                                    <NavigationMenuLink href={products.href}>
+                                    <NavigationMenuLink href={getHref(pathname, products.href)}>
                                       <div className={`${styledDropdown} hover:text-primary ${activedriverhovered === products.title? 'text-primary': ''}`} onMouseEnter={() => (setDriversSubSubMenuUrl(products.url), setPictureSlugUrl(products.href), setPictureDesc(products.imageDesc), setactivedriverhovered(products.title), setDriversSubSubSubMenu(EmptyMenu), setHoveredDriverSubSubMenu(''), setnameForHoveredPicture(products.title))}>
                                       {products.newProd ? <>{products.title.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div></> : products.title}
                                       </div>
@@ -778,7 +964,7 @@ function Navbar() {
                                   driversubMenuUrl != '' &&
                                   //DISINI
                                     // <Link href={pictureSlugUrl} passHref>
-                                      <NavigationMenuLink href={pictureSlugUrl}>
+                                      <NavigationMenuLink href={getHref(pathname, pictureSlugUrl)}>
                                         <div className="relative overflow-hidden flex items-center justify-center h-full w-50">
                                           {driversubMenuUrl !== '' &&
                                             <div className="absolute flex items-center justify-center z-0 w-10 h-10">
@@ -794,7 +980,7 @@ function Navbar() {
                                     // </Link>
                               : 
                                 // <Link href={products.href} passHref>
-                                  <NavigationMenuLink href={products.href}>
+                                  <NavigationMenuLink href={getHref(pathname, products.href)}>
                                     <div className={`${styledDropdown} flex justify-between items-center align-middle ${hoveredDriverSubSubMenu===products.title ? 'text-primary' : ''}`} onMouseEnter={()=>(setDriversSubSubSubMenuUrl(''), setactivedriverhovered(''))}>
                                       {products.title}
                                       <ChevronRight size={15} className={`pb-1 ${hoveredDriverSubSubMenu===products.title ? 'text-primary' : ''}`}/>
@@ -815,7 +1001,7 @@ function Navbar() {
                             products.parent===""?
                               products.title != ''?
                                 // <Link key={products.title} href={products.href} passHref>
-                                  <NavigationMenuLink key={products.title} href={products.href}>
+                                  <NavigationMenuLink key={products.title} href={getHref(pathname, products.href)}>
                                     <div className={`${styledDropdown} hover:text-primary ${activedriverhovered === products.title? 'text-primary': ''}`} onMouseEnter={() => (setDriversSubSubSubMenuUrl(products.url), setPictureSlugUrl(products.href), setPictureDesc(products.imageDesc), setactivedriverhovered(products.title), setnameForHoveredPicture(products.title))}>
                                     {products.newProd ? <>{products.title.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div></> : products.title}
                                     </div>
@@ -824,7 +1010,7 @@ function Navbar() {
                               :
                                 driversubsubMenuUrl != '' &&
                                   // <Link href={pictureSlugUrl} passHref key={products.title}>
-                                    <NavigationMenuLink href={pictureSlugUrl} key={products.title}>
+                                    <NavigationMenuLink href={getHref(pathname, pictureSlugUrl)} key={products.title}>
                                     <div className="relative overflow-hidden flex items-center justify-center h-full w-50">
                                       {driversubsubMenuUrl !== '' &&
                                         <div className="absolute flex items-center justify-center z-0 w-10 h-10">
@@ -840,7 +1026,7 @@ function Navbar() {
                                   // </Link>
                             :
                               // <Link key={products.title} href={products.href} passHref>
-                                <NavigationMenuLink key={products.title} href={products.href}>
+                                <NavigationMenuLink key={products.title} href={getHref(pathname, products.href)}>
                                   <div className={`${styledDropdown} flex justify-between items-center align-middle`}>
                                     {products.title}
                                     <ChevronRight size={15} className='pb-1'/>
@@ -856,7 +1042,7 @@ function Navbar() {
                       <ul className="gap-1 p-1">
                         {driversubsubsubMenuUrl != '' &&
                           // <Link href={pictureSlugUrl} passHref>
-                            <NavigationMenuLink href={pictureSlugUrl}>
+                            <NavigationMenuLink href={getHref(pathname, pictureSlugUrl)}>
                             <div className="relative overflow-hidden flex items-center justify-center h-full w-50">
                               {driversubsubsubMenuUrl !== '' &&
                                 <div className="absolute flex items-center justify-center z-0 w-10 h-10">
@@ -878,124 +1064,126 @@ function Navbar() {
                 {/* } */}
               </NavigationMenuItem>
               
-              <NavigationMenuItem>
-                {/* <Link href="/products/?categorySlug=kits" passHref> */}
-                {/* <Link href="/kits" passHref> */}
-                  <NavigationMenuLink href='/kits'>
-                    <div className="p-0 relative z-101">
-                      <NavigationMenuTrigger className={navigationMenuTriggerStyle().concat(" bg-transparent text-foreground hover:text-primary")} onMouseLeave={() => setOpenedContentForBg(false)} onMouseEnter={() => {
-                        setKitsSubMenu(EmptyMenu)
-                        setHoveredDriverMenu("");
-                        setHoveredDriverSubMenu("");
-                        setHoveredDriverSubSubMenu("");
-                        setHoveredKitsMenu("");
-                        setDriversSubMenu(EmptyMenu);
-                        setDriversSubSubMenu(EmptyMenu);
-                        setDriversSubSubSubMenu(EmptyMenu);
-                        setPictureSlugUrl('');
-                        setPictureDesc('');
-                        setactivedriverhovered('');
-                        setDriversSubMenuUrl('');
-                        setDriversSubSubMenuUrl('');
-                        setDriversSubSubSubMenuUrl('');
-                        setOpenedContentForBg(true);
-                      }}>
-                        Kits
-                      </NavigationMenuTrigger>
-                    </div>
-                  </NavigationMenuLink>
-                {/* </Link> */}
-                {/* {openedContentForBg && */}
-                  <NavigationMenuContent onMouseLeave={() => setOpenedContentForBg(false)} onMouseEnter={() => setOpenedContentForBg(true)}>
-                  <div className='xl:pl-[72px] xl:pr-[72px] lg:pl-[56px] lg:pr-[56px] py-4 pt-20'>
-                      <SearchBoxNavbar/>
-                    </div>
-                    <div className='grid grid-cols-5 w-screen xl:px-16 lg:px-12 px-8 py-4 h-[550px]'>
-                      <div className='overflow-y-auto overflow-x-hidden border-r-2 z-40 bg-background'>
-                        <ul className="gap-1 p-1">
 
-                          {KitsMenu.map((kit, index) => (
-                            <NavigationMenuLink href={kit.href} key={index}>
-                              <div
-                                onMouseEnter={() => {
-                                  setKitsSubMenu(kitsSubMenuMapping[kit.title.concat('-', kit.parent)] || EmptyMenu)
-                                  setHoveredDriverMenu("");
-                                  setHoveredDriverSubMenu("");
-                                  setHoveredDriverSubSubMenu("");
-                                  setHoveredKitsMenu(kit.title);
-                                  setDriversSubMenu(EmptyMenu);
-                                  setDriversSubSubMenu(EmptyMenu);
-                                  setDriversSubSubSubMenu(EmptyMenu);
-                                  setDriversSubMenuUrl('');
-                                  setactivedriverhovered("");
-                                }}
-                                className={`px-2 transform duration-200 ${hoveredKitsMenu === kit.title ? 'translate-x-2' : ''}`}
-                              >
-                                <div className={`${styledDropdown} flex justify-between items-center align-middle ${hoveredKitsMenu === kit.title ? 'text-primary' : ''}`}>
-                                  {kit.title}
-                                  <ChevronRight size={15} className={`pb-1 ${hoveredKitsMenu=== kit.title ? 'text-primary' : ''}`}/>
-                                </div>
-                              </div>
-                            </NavigationMenuLink>
-                          ))}
-                          
-                        </ul>
+              {pathname.includes('sbaudience') ? null :
+                <NavigationMenuItem>
+                  {/* <Link href="/products/?categorySlug=kits" passHref> */}
+                  {/* <Link href="/kits" passHref> */}
+                    <NavigationMenuLink href={getHref(pathname, 'kits')}>
+                      <div className="p-0 relative z-101">
+                        <NavigationMenuTrigger className={navigationMenuTriggerStyle().concat(" bg-transparent text-foreground hover:text-primary")} onMouseLeave={() => setOpenedContentForBg(false)} onMouseEnter={() => {
+                          setKitsSubMenu(EmptyMenu)
+                          setHoveredDriverMenu("");
+                          setHoveredDriverSubMenu("");
+                          setHoveredDriverSubSubMenu("");
+                          setHoveredKitsMenu("");
+                          setDriversSubMenu(EmptyMenu);
+                          setDriversSubSubMenu(EmptyMenu);
+                          setDriversSubSubSubMenu(EmptyMenu);
+                          setPictureSlugUrl('');
+                          setPictureDesc('');
+                          setactivedriverhovered('');
+                          setDriversSubMenuUrl('');
+                          setDriversSubSubMenuUrl('');
+                          setDriversSubSubSubMenuUrl('');
+                          setOpenedContentForBg(true);
+                        }}>
+                          Kits
+                        </NavigationMenuTrigger>
                       </div>
-                      <div className={`overflow-y-auto overflow-x-hidden border-r-2 px-2 transform transition-all z-30 bg-background ${kitssubMenu.length>0 && kitssubMenu[0].title === ''? '-translate-x-1/2' : 'translate-x-0'} ${driversubMenuUrl===''? 'border-transparent' : ''}`}>
-                        <ul className="gap-1 p-1">
-                          {/* SUB MENU */}
-                          {kitssubMenu.map((products, index) => (
-                            products.parent === ""?
-                              // <Link key={index} href={products.href} passHref>
-                                <NavigationMenuLink key={index} href={products.href}>
-                                  <div className={`${styledDropdown} hover:text-primary ${activedriverhovered === products.title? 'text-primary': ''}`} onMouseEnter={() => (setDriversSubMenuUrl(products.url), setPictureSlugUrl(products.href), setPictureDesc(products.imageDesc), setactivedriverhovered(products.title),setnameForHoveredPicture(products.title))}>
-                                  {products.newProd ? <>{products.title.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div></> : products.title}
-                                  </div>
-                                </NavigationMenuLink>
-                              // </Link>
-                            :
-                              // <Link key={index} href={products.href} passHref>
-                                <NavigationMenuLink key={index} href={products.href}>
-                                  <div className={`${styledDropdown} flex justify-between items-center align-middle ${hoveredDriverSubMenu===products.title ? 'text-primary' : ''}`} onMouseEnter={()=>(setDriversSubSubMenuUrl(''), setDriversSubSubSubMenuUrl(''), setactivedriverhovered(''))}>
-                                    {products.title}
-                                    <ChevronRight size={15} className='pb-1'/>
-                                  </div>
-                                </NavigationMenuLink>
-                              // </Link>
-                            ))
-                          }
-                        </ul>
+                    </NavigationMenuLink>
+                  {/* </Link> */}
+                  {/* {openedContentForBg && */}
+                    <NavigationMenuContent onMouseLeave={() => setOpenedContentForBg(false)} onMouseEnter={() => setOpenedContentForBg(true)}>
+                    <div className='xl:pl-[72px] xl:pr-[72px] lg:pl-[56px] lg:pr-[56px] py-4 pt-20'>
+                        <SearchBoxNavbar/>
                       </div>
-                      <div className={`overflow-y-auto overflow-x-hidden transform transition-all z-20 bg-background ${driversubMenuUrl === ''? '-translate-x-1/2' : 'translate-x-0'}`}>
-                        <ul className="gap-1 p-1">
-                          {driversubMenuUrl != '' &&
-                            // <Link href={pictureSlugUrl} passHref>
-                              <NavigationMenuLink href={pictureSlugUrl}>
-                              <div className="relative overflow-hidden flex items-center justify-center h-full w-50">
-                                {driversubMenuUrl !== '' &&
-                                  <div className="absolute flex items-center justify-center z-0 w-10 h-10">
-                                    <Loader2 className="animate-spin text-gray-500" size={20} />
+                      <div className='grid grid-cols-5 w-screen xl:px-16 lg:px-12 px-8 py-4 h-[550px]'>
+                        <div className='overflow-y-auto overflow-x-hidden border-r-2 z-40 bg-background'>
+                          <ul className="gap-1 p-1">
+
+                            {KitsMenu.map((kit, index) => (
+                              <NavigationMenuLink href={getHref(pathname, kit.href)} key={index}>
+                                <div
+                                  onMouseEnter={() => {
+                                    setKitsSubMenu(kitsSubMenuMapping[kit.title.concat('-', kit.parent)] || EmptyMenu)
+                                    setHoveredDriverMenu("");
+                                    setHoveredDriverSubMenu("");
+                                    setHoveredDriverSubSubMenu("");
+                                    setHoveredKitsMenu(kit.title);
+                                    setDriversSubMenu(EmptyMenu);
+                                    setDriversSubSubMenu(EmptyMenu);
+                                    setDriversSubSubSubMenu(EmptyMenu);
+                                    setDriversSubMenuUrl('');
+                                    setactivedriverhovered("");
+                                  }}
+                                  className={`px-2 transform duration-200 ${hoveredKitsMenu === kit.title ? 'translate-x-2' : ''}`}
+                                >
+                                  <div className={`${styledDropdown} flex justify-between items-center align-middle ${hoveredKitsMenu === kit.title ? 'text-primary' : ''}`}>
+                                    {kit.title}
+                                    <ChevronRight size={15} className={`pb-1 ${hoveredKitsMenu=== kit.title ? 'text-primary' : ''}`}/>
                                   </div>
-                                }
-                                  <Image src={driversubMenuUrl.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_ROOT_URL}${driversubMenuUrl}` : driversubMenuUrl} alt={activedriverhovered} className='w-50 h-fit z-10' width={500} height={500} onMouseEnter={() => (setactivedriverhovered(nameForHoveredPicture))}/>
-                                </div>
-                                <div className='flex justify-center items-center text-center h-full'>
-                                  {pictureDesc}
                                 </div>
                               </NavigationMenuLink>
-                            // </Link>
-                          }    
-                        </ul>
+                            ))}
+                            
+                          </ul>
+                        </div>
+                        <div className={`overflow-y-auto overflow-x-hidden border-r-2 px-2 transform transition-all z-30 bg-background ${kitssubMenu.length>0 && kitssubMenu[0].title === ''? '-translate-x-1/2' : 'translate-x-0'} ${driversubMenuUrl===''? 'border-transparent' : ''}`}>
+                          <ul className="gap-1 p-1">
+                            {/* SUB MENU */}
+                            {kitssubMenu.map((products, index) => (
+                              products.parent === ""?
+                                // <Link key={index} href={products.href} passHref>
+                                  <NavigationMenuLink key={index} href={getHref(pathname, products.href)}>
+                                    <div className={`${styledDropdown} hover:text-primary ${activedriverhovered === products.title? 'text-primary': ''}`} onMouseEnter={() => (setDriversSubMenuUrl(products.url), setPictureSlugUrl(products.href), setPictureDesc(products.imageDesc), setactivedriverhovered(products.title),setnameForHoveredPicture(products.title))}>
+                                    {products.newProd ? <>{products.title.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div></> : products.title}
+                                    </div>
+                                  </NavigationMenuLink>
+                                // </Link>
+                              :
+                                // <Link key={index} href={products.href} passHref>
+                                  <NavigationMenuLink key={index} href={getHref(pathname, products.href)}>
+                                    <div className={`${styledDropdown} flex justify-between items-center align-middle ${hoveredDriverSubMenu===products.title ? 'text-primary' : ''}`} onMouseEnter={()=>(setDriversSubSubMenuUrl(''), setDriversSubSubSubMenuUrl(''), setactivedriverhovered(''))}>
+                                      {products.title}
+                                      <ChevronRight size={15} className='pb-1'/>
+                                    </div>
+                                  </NavigationMenuLink>
+                                // </Link>
+                              ))
+                            }
+                          </ul>
+                        </div>
+                        <div className={`overflow-y-auto overflow-x-hidden transform transition-all z-20 bg-background ${driversubMenuUrl === ''? '-translate-x-1/2' : 'translate-x-0'}`}>
+                          <ul className="gap-1 p-1">
+                            {driversubMenuUrl != '' &&
+                              // <Link href={pictureSlugUrl} passHref>
+                                <NavigationMenuLink href={getHref(pathname, pictureSlugUrl)}>
+                                <div className="relative overflow-hidden flex items-center justify-center h-full w-50">
+                                  {driversubMenuUrl !== '' &&
+                                    <div className="absolute flex items-center justify-center z-0 w-10 h-10">
+                                      <Loader2 className="animate-spin text-gray-500" size={20} />
+                                    </div>
+                                  }
+                                    <Image src={driversubMenuUrl.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_ROOT_URL}${driversubMenuUrl}` : driversubMenuUrl} alt={activedriverhovered} className='w-50 h-fit z-10' width={500} height={500} onMouseEnter={() => (setactivedriverhovered(nameForHoveredPicture))}/>
+                                  </div>
+                                  <div className='flex justify-center items-center text-center h-full'>
+                                    {pictureDesc}
+                                  </div>
+                                </NavigationMenuLink>
+                              // </Link>
+                            }    
+                          </ul>
+                        </div>
                       </div>
-                    </div>
-                  </NavigationMenuContent>
-                {/* } */}
-              </NavigationMenuItem>
-
+                    </NavigationMenuContent>
+                  {/* } */}
+                </NavigationMenuItem>
+              }
 
               <NavigationMenuItem>
                 {/* <Link href="/new-products" passHref> */}
-                  <NavigationMenuLink href="/new-products">
+                  <NavigationMenuLink href={getHref(pathname, 'new-products')}>
                     <div className="p-0 relative z-101">
                       <NavigationMenuTrigger className={navigationMenuTriggerStyle().concat(" bg-transparent text-foreground hover:text-primary")} onMouseLeave={() => setOpenedContentForBg(false)} onMouseEnter={() => {
                         setKitsSubMenu(EmptyMenu)
@@ -1034,7 +1222,7 @@ function Navbar() {
                           </div>
                           {newProductsMenu.length>0 && newProductsMenu.map((products, index) => (
                             // <Link key={index} href={products.href} passHref>
-                              <NavigationMenuLink key={index} href={products.href}>
+                              <NavigationMenuLink key={index} href={getHref(pathname, products.href)}>
                                 <div className={`${styledDropdown} hover:text-primary ${activedriverhovered === products.name? 'text-primary': ''}`} onMouseEnter={() => (setDriversSubMenuUrl(products.image_url), setPictureSlugUrl(products.href), setPictureDesc(products.navbarNotes), setactivekitshovered(''), setactivedriverhovered(products.name),setnameForHoveredPicture(products.name))}>
                                   {products.name.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div>
                                 </div>
@@ -1042,27 +1230,29 @@ function Navbar() {
                             // </Link>
                           ))}
                         </ul>
-                        <ul className="gap-1 p-1">
-                          {/* MENU */}
-                          <div className='font-bold pl-1'>
-                            Kits
-                          </div>
-                          {newKitsMenu.length>0 && newKitsMenu.map((products, index) => (
-                            // <Link key={index} href={products.href} passHref>
-                              <NavigationMenuLink key={index} href={products.href}>
-                                <div className={`${styledDropdown} hover:text-primary ${activekitshovered === products.name? 'text-primary': ''}`} onMouseEnter={() => (setDriversSubMenuUrl(products.image_url), setPictureSlugUrl(products.href), setPictureDesc(products.navbarNotes), setactivedriverhovered(''), setactivekitshovered(products.name),setnameForHoveredPicture(products.name))}>
-                                  {products.name.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div>
-                                </div>
-                              </NavigationMenuLink>
-                            // </Link>
-                          ))}
-                        </ul>
+                        {pathname.includes('sbaudience') ? null :
+                          <ul className="gap-1 p-1">
+                            {/* MENU */}
+                            <div className='font-bold pl-1'>
+                              Kits
+                            </div>
+                            {newKitsMenu.length>0 && newKitsMenu.map((products, index) => (
+                              // <Link key={index} href={products.href} passHref>
+                                <NavigationMenuLink key={index} href={getHref(pathname, products.href)}>
+                                  <div className={`${styledDropdown} hover:text-primary ${activekitshovered === products.name? 'text-primary': ''}`} onMouseEnter={() => (setDriversSubMenuUrl(products.image_url), setPictureSlugUrl(products.href), setPictureDesc(products.navbarNotes), setactivedriverhovered(''), setactivekitshovered(products.name),setnameForHoveredPicture(products.name))}>
+                                    {products.name.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div>
+                                  </div>
+                                </NavigationMenuLink>
+                              // </Link>
+                            ))}
+                          </ul>
+                        }
                       </div>
                       <div className={`overflow-y-auto transform transition-all z-30 bg-background ${driversubMenuUrl === ''? '-translate-x-1/2' : 'translate-x-0'}`}>
                         <ul className="gap-1 p-1">
                           {driversubMenuUrl != '' &&
                             // <Link href={pictureSlugUrl} passHref>             
-                              <NavigationMenuLink href={pictureSlugUrl}>
+                              <NavigationMenuLink href={getHref(pathname, pictureSlugUrl)}>
                               <div className="relative overflow-hidden flex items-center justify-center h-full w-50">
                                 {driversubMenuUrl !== '' &&
                                   <div className="absolute flex items-center justify-center z-0 w-10 h-10">
@@ -1092,7 +1282,7 @@ function Navbar() {
 
               <NavigationMenuItem>
                 {/* <Link href="/technical" passHref> */}
-                  <NavigationMenuLink href="/technical" className={navigationMenuTriggerStyle().concat(" bg-transparent")}>
+                  <NavigationMenuLink href={getHref(pathname, 'technical')} className={navigationMenuTriggerStyle().concat(" bg-transparent")}>
                     <div className="p-0 relative z-101">
                       Technical
                     </div>
@@ -1103,7 +1293,7 @@ function Navbar() {
 
               <NavigationMenuItem>
                 {/* <Link href="/distributors" passHref> */}
-                  <NavigationMenuLink href="/distributors" className={navigationMenuTriggerStyle().concat(" bg-transparent")}>
+                  <NavigationMenuLink href={getHref(pathname, 'distributors')} className={navigationMenuTriggerStyle().concat(" bg-transparent")}>
                     <div className="p-0 relative z-101">
                       Distributors
                     </div>
@@ -1114,7 +1304,7 @@ function Navbar() {
 
               <NavigationMenuItem>
                 {/* <Link href="/contact" passHref> */}
-                  <NavigationMenuLink href="/contact" className={navigationMenuTriggerStyle().concat(" bg-transparent")}>
+                  <NavigationMenuLink href={getHref(pathname, 'contact')} className={navigationMenuTriggerStyle().concat(" bg-transparent")}>
                     <div className="p-0 relative z-101">
                       Contact
                     </div>
@@ -1125,13 +1315,13 @@ function Navbar() {
           </NavigationMenu>
         </div>
         <div className={`w-1/4 hidden lg:flex justify-end`}>
-          <SearchBox mobile={false}/>
+          <SearchBox mobile={false} changeBrand/>
         </div>
 
 
         {/* MAIN MENU TABLET & MOBILE VIEW */}
         <div className='flex lg:hidden'>
-          <SearchBox mobile={true} />
+          <SearchBox mobile={true} changeBrand/>
           <Sheet open={isLgScreen?false:undefined}>
             <SheetTrigger asChild>
               <Button variant={null} className='w-fit p-0'>
@@ -1152,7 +1342,7 @@ function Navbar() {
                     </AccordionTrigger>
                     <AccordionContent>
                       {/* <Button asChild variant={"default"} className='w-full '> */}
-                      <Link href="/drivers" className='w-full'>
+                      <Link href={getHref(pathname, 'drivers')} className='w-full'>
                         <SheetClose className='w-full flex text-center justify-center p-1 bg-primary text-white rounded-xl'>
                           Show All Drivers
                         </SheetClose>
@@ -1162,7 +1352,7 @@ function Navbar() {
                         {driverMenu.map((menu, indexdriver) => 
                           <AccordionItem key={menu.title} value={"item-".concat(indexdriver.toString())}>
                             {menu.parent===""? 
-                              <Link href={menu.href} key={menu.title}>
+                              <Link href={getHref(pathname, menu.href)} key={menu.title}>
                                 <SheetClose className='p-2 w-full hover:text-primary text-left'>
                                 {menu.newProd ? <>{menu.title.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div></> : menu.title}
                                 </SheetClose>
@@ -1175,7 +1365,7 @@ function Navbar() {
                               </AccordionTrigger>
                             }
                             <AccordionContent>
-                              <Link href={menu.href} className='w-full'>
+                              <Link href={getHref(pathname, menu.href)} className='w-full'>
                                 <SheetClose className='w-full flex text-center justify-center p-1 bg-primary text-white rounded-xl'>
                                   Show All {menu.title === 'Widebanders / Full Ranges' ? 'Widebanders' : menu.title}
                                 </SheetClose>
@@ -1184,7 +1374,7 @@ function Navbar() {
                                 {driversubMenu.map((submenu) => 
                                   <AccordionItem key={submenu.title} value={submenu.title}>
                                     {submenu.parent===""? 
-                                      <Link key={submenu.title} href={submenu.href}>
+                                      <Link key={submenu.title} href={getHref(pathname, submenu.href)}>
                                         <SheetClose className='p-2 w-full hover:text-primary text-left'>
                                         {submenu.newProd ? <>{submenu.title.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div></> : submenu.title}
                                         </SheetClose>
@@ -1197,7 +1387,7 @@ function Navbar() {
                                       </AccordionTrigger>
                                     }
                                     <AccordionContent>
-                                      <Link href={submenu.href} className='w-full'>
+                                      <Link href={getHref(pathname, submenu.href)} className='w-full'>
                                         <SheetClose className='w-full flex text-center justify-center p-1 bg-primary text-white rounded-xl'>
                                           Show All {submenu.title}
                                         </SheetClose>
@@ -1206,7 +1396,7 @@ function Navbar() {
                                         {driversubsubMenu.map((subsubmenu) =>
                                           <AccordionItem key={subsubmenu.title} value={subsubmenu.title}>
                                             {subsubmenu.parent===""? 
-                                              <Link key={subsubmenu.title} href={subsubmenu.href}>
+                                              <Link key={subsubmenu.title} href={getHref(pathname, subsubmenu.href)}>
                                                 <SheetClose className='p-2 w-full hover:text-primary text-left'>
                                                   {subsubmenu.newProd ? <>{subsubmenu.title.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div></> : subsubmenu.title}
                                                 </SheetClose>
@@ -1219,13 +1409,13 @@ function Navbar() {
                                               </AccordionTrigger>
                                             }
                                             <AccordionContent className={`${pathname.includes('sbaudience') ? 'bg-zinc-500' : 'bg-zinc-300'} rounded-lg`}>
-                                              <Link href={subsubmenu.href} className='w-full'>
+                                              <Link href={getHref(pathname, subsubmenu.href)} className='w-full'>
                                                 <SheetClose className='w-full flex text-center justify-center p-1 bg-primary text-white rounded-xl'>
                                                   Show All {subsubmenu.title}
                                                 </SheetClose>
                                               </Link>
                                               {driversubsubsubMenu.map((subsubsubmenu) => 
-                                                <Link key={subsubsubmenu.title} href={subsubsubmenu.href}>
+                                                <Link key={subsubsubmenu.title} href={getHref(pathname, subsubsubmenu.href)}>
                                                   <SheetClose className='p-2 w-full hover:text-primary text-left'>
                                                     {subsubsubmenu.newProd ? <>{subsubsubmenu.title.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div></> : subsubsubmenu.title}
                                                   </SheetClose>
@@ -1252,7 +1442,7 @@ function Navbar() {
                       Kits
                     </AccordionTrigger>
                     <AccordionContent>
-                      <Link href='/kits' className='w-full'>
+                      <Link href={getHref(pathname, 'kits')} className='w-full'>
                         <SheetClose className='w-full flex text-center justify-center p-1 bg-primary text-white rounded-xl'>
                           Show All Kits
                         </SheetClose>
@@ -1261,7 +1451,7 @@ function Navbar() {
                         {kitMenu.map((kits) => 
                           <AccordionItem key={kits.title} value={kits.title}>
                             {kits.parent===""? 
-                              <Link href={kits.href} key={kits.title}>
+                              <Link href={getHref(pathname, kits.href)} key={kits.title}>
                                 <SheetClose className='p-2 w-full hover:text-primary text-left'>
                                   {kits.newProd ? <>{kits.title.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div></> : kits.title}
                                 </SheetClose>
@@ -1274,7 +1464,7 @@ function Navbar() {
                               </AccordionTrigger>
                             }
                             <AccordionContent>
-                              <Link href={kits.href} className='w-full'>
+                              <Link href={getHref(pathname, kits.href)} className='w-full'>
                                 <SheetClose className='w-full flex text-center justify-center p-1 bg-primary text-white rounded-xl'>
                                   Show All {kits.title}
                                 </SheetClose>
@@ -1282,7 +1472,7 @@ function Navbar() {
                               {kitssubMenu.map((kitsubmenu, index) => 
                                 <Accordion key={kitsubmenu.title} type="single" collapsible className={`${pathname.includes('sbaudience') ? 'bg-zinc-700' : 'bg-zinc-100'} w-full pl-2 ${index === 0 ? 'rounded-t-lg' : index === kitssubMenu.length -1 ? 'rounded-b-lg' : 'rounded-none'}`}>
                                   <AccordionItem key={kitsubmenu.title} value={kitsubmenu.title.concat(index.toString())}> 
-                                    <Link key={kitsubmenu.title} href={kitsubmenu.href}>
+                                    <Link key={kitsubmenu.title} href={getHref(pathname, kitsubmenu.href)}>
                                       <SheetClose className='p-2 w-full hover:text-primary text-left'>
                                         {kitsubmenu.newProd ? <>{kitsubmenu.title.split(" / ")[0]} <div className="inline-flex text-primary">NEW</div></> : kitsubmenu.title}
                                       </SheetClose>
@@ -1310,7 +1500,7 @@ function Navbar() {
                             {newProductsMenu.map((newsubmenu, index) => 
                               <Accordion key={newsubmenu.name} type="single" collapsible className={`${pathname.includes('sbaudience') ? 'bg-zinc-700' : 'bg-zinc-100'} w-full pl-2 ${index === 0 ? 'rounded-t-lg' : index === newProductsMenu.length -1 ? 'rounded-b-lg' : 'rounded-none'}`}>
                                 <AccordionItem key={newsubmenu.name} value={newsubmenu.name.concat(index.toString())}> 
-                                  <Link key={newsubmenu.name} href={newsubmenu.href}>
+                                  <Link key={newsubmenu.name} href={getHref(pathname, newsubmenu.href)}>
                                     <SheetClose className='p-2 w-full hover:text-primary text-left'>
                                       {newsubmenu.name} <div className="inline-flex text-primary">NEW</div>
                                     </SheetClose>
@@ -1328,7 +1518,7 @@ function Navbar() {
                             {newKitsMenu.map((newsubmenu, index) => 
                               <Accordion key={newsubmenu.name} type="single" collapsible className={`${pathname.includes('sbaudience') ? 'bg-zinc-700' : 'bg-zinc-100'} w-full pl-2 ${index === 0 ? 'rounded-t-lg' : index === newKitsMenu.length -1 ? 'rounded-b-lg' : 'rounded-none'}`}>
                                 <AccordionItem key={newsubmenu.name} value={newsubmenu.name.concat(index.toString())}> 
-                                  <Link key={newsubmenu.name} href={newsubmenu.href}>
+                                  <Link key={newsubmenu.name} href={getHref(pathname, newsubmenu.href)}>
                                     <SheetClose className='p-2 w-full hover:text-primary text-left'>
                                       {newsubmenu.name} <div className="inline-flex text-primary">NEW</div>
                                     </SheetClose>
@@ -1343,21 +1533,21 @@ function Navbar() {
                   </AccordionItem>
                 </Accordion>
                 <Button variant={null} asChild className='px-6'>
-                  <Link href="/technical">
+                  <Link href={getHref(pathname, 'technical')}>
                     <SheetClose className='w-full text-base text-left hover:text-primary pl-2'>
                       Technical
                     </SheetClose>
                   </Link>
                 </Button>
                 <Button variant={null} asChild className='px-6'>
-                  <Link href="/distributors">
+                  <Link href={getHref(pathname, 'distributors')}>
                     <SheetClose className='w-full text-base text-left hover:text-primary pl-2'>
                       Distributors
                     </SheetClose>
                   </Link>
                 </Button>
                 <Button variant={null} asChild className='px-6'>
-                  <Link href="/contact">
+                  <Link href={getHref(pathname, 'contact')}>
                     <SheetClose className='w-full text-base text-left hover:text-primary pl-2'>
                       Contact
                     </SheetClose>

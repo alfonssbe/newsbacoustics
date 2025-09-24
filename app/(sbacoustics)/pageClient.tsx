@@ -6,13 +6,13 @@ import Catalogues from './components-homescreen/Catalogues';
 import FindUs from './components-homescreen/FindUs';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { getFeaturedProducts } from './utils/get-data';
 import { Loader } from '../../components/ui/loader';
 import { Button } from '../../components/ui/button';
 import Link from 'next/link';
 import BrandChoice from './components-homescreen/BrandChoice';
 import { FeaturedProducts } from './types';
 import Hero from './components-homescreen/Hero';
+import getAllFeaturedProducts from './actions/get-all-featured-products';
 
 export default function LandingPageSBAcousticsClient() {
  const [value, setValue] = useState<FeaturedProducts[]>([]);
@@ -25,7 +25,7 @@ export default function LandingPageSBAcousticsClient() {
     const fetchData = async () => {
       try {
         document.body.style.overflow = 'hidden';
-        const featuredData: FeaturedProducts[] = await getFeaturedProducts(pathname);
+        const featuredData: FeaturedProducts[] = await getAllFeaturedProducts(pathname);
         setValue(featuredData);
 
         setTimeout(() => {

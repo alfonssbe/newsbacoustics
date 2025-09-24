@@ -9,7 +9,7 @@ import { ThemeProvider } from './providers/theme-provider';
 import ChangeTheme from '../components/setTheme';
 import NextTopLoader from 'nextjs-toploader';
 import Image from 'next/image';
-import Navbar from './(sbacoustics)/components/navbar';
+import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 
 const font = Open_Sans({ subsets: ['latin'] })

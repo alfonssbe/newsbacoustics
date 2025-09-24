@@ -5,7 +5,10 @@ import path from "path";
 
 // Fetch your dynamic URLs (from a database, API, or local data)
 async function getProductsDynamicUrls() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/${process.env.NEXT_PUBLIC_FETCH_ALL_PRODUCTS}`);
+  const brandId = process.env.NEXT_PUBLIC_SB_ACOUSTICS_ID
+  const API = `${process.env.NEXT_PUBLIC_ROOT_URL}/${process.env.NEXT_PUBLIC_FETCH_ALL_PRODUCTS}`
+  const API_EDITED_BRANDID = API.replace('{brandId}', brandId ?? '680c5eee-7ed7-41bc-b14b-4185f8a1c379'); //SBAcoustics ID as default
+  const res = await fetch(API_EDITED_BRANDID);
   const products = await res.json();
   return products.map((product: { slug: string }) => ({
     url: `${process.env.NEXT_PUBLIC_ROOT_URL}/products/${product.slug}`,

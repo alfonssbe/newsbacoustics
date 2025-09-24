@@ -15,7 +15,7 @@ export default async function DashboardLayout(
   } = props;
 
   return (
-    <>
+    <div className='bg-zinc-500'>
     {params.brandId === 'undefined' ? (
         <div className="flex flex-col items-center justify-center h-screen w-full text-center">
         <p>You have not been assigned to any brands. Please contact administrator.</p>
@@ -30,6 +30,6 @@ export default async function DashboardLayout(
       {children}
       </>
     )}
-    </>
+    </div>
   );
 };

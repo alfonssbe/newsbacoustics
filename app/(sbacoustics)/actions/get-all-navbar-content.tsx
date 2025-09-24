@@ -17,8 +17,6 @@ const getAllNavbarContent = async (path: string): Promise<[NavbarProducts[], Pri
     redirect('/');
   }
 
-  console.log("DATA NAVBAR: ", data);
-
 
   for (let i = 0; i < data[0].length; i++) {
     if(data[0][i].url.length>0){

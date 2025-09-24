@@ -17,13 +17,13 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: 'SB Audience',
       images: [
         {
-          url: `${baseUrl}/images/sbaudience/logo_sbaudience.png`,
+          url: `${baseUrl}/images/sbaudience/logo_sbaudience.webp`,
           width: 1200,
           height: 630,
           alt: 'SB Audience Logo',
         },
         {
-          url: `${baseUrl}/images/sbaudience/logo_sbaudience.png`,
+          url: `${baseUrl}/images/sbaudience/logo_sbaudience.webp`,
           width: 800,
           height: 800,
           alt: 'SB Audience Logo',
@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: 'Check out the newest products from the SB Audience range!',
       images: [
         {
-          url: `${baseUrl}/images/sbaudience/logo_sbaudience.png`,
+          url: `${baseUrl}/images/sbaudience/logo_sbaudience.webp`,
           width: 800,
           height: 800,
           alt: 'SB Audience Logo',

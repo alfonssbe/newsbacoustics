@@ -25,10 +25,11 @@ function normalizeFractions(text: string): string {
 
 type PropType = {
   mobile: boolean
+  changeBrand: boolean
 }
 
 const SearchBox: FC<PropType> = (props) => {
-  const { mobile } = props
+  const { mobile, changeBrand } = props
   const [finalProductSearchbox, setFinalProductSearchbox] = useState<Searchbox[]>([]);
   const router = useRouter();
   const [activeSearch, setactiveSearch] = useState<string>('');
@@ -57,7 +58,7 @@ const SearchBox: FC<PropType> = (props) => {
     useEffect(() => {
       const fetchData = async () => {
           try {
-              const data : Searchbox[] = await getProductsForSearchbox();
+              const data : Searchbox[] = await getProductsForSearchbox(pathname);
               data.sort((a, b) => a.size[0].localeCompare(b.size[0]))
               setFinalProductSearchbox(data);
               pathname === '/drivers' && localStorage.setItem('allDriversProducts', (data.map(item => item.slug).join(',') + ','))
@@ -66,7 +67,7 @@ const SearchBox: FC<PropType> = (props) => {
           }
       };
       fetchData();
-    }, []);
+    }, [changeBrand]);
 
     useEffect(() => {
       pathname === '/drivers' && localStorage.setItem('allDriversProducts', (finalProductSearchbox.map(item => item.slug).join(',') + ','))

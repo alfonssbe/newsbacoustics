@@ -1,13 +1,12 @@
 "use client"
 
-import { Loader2, Search } from "lucide-react"
+import { Loader2 } from "lucide-react"
 
-import { useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { Searchbox } from "../app/(sbacoustics)/types"
 import getProductsForSearchbox from "../app/(sbacoustics)/actions/get-product-for-searchbox"
 import { Input } from "./ui/input"
 import Image from "next/image"
-import Link from "next/link"
 import Fuse from "fuse.js";
 import { useEffect, useRef, useState } from "react"
 
@@ -21,7 +20,7 @@ function normalizeFractions(text: string): string {
 
 function SearchBoxNavbar() {
   const [finalProductSearchbox, setFinalProductSearchbox] = useState<Searchbox[]>([]);
-  const router = useRouter();
+  const pathname = usePathname()
   const [activeSearch, setactiveSearch] = useState<string>('');
   const [foundProducts, setfoundProducts] = useState<Searchbox[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -48,7 +47,7 @@ function SearchBoxNavbar() {
     useEffect(() => {
       const fetchData = async () => {
           try {
-              const data : Searchbox[] = await getProductsForSearchbox();
+              const data : Searchbox[] = await getProductsForSearchbox(pathname);
               data.sort((a, b) => a.size[0].localeCompare(b.size[0]))
               setFinalProductSearchbox(data);
               setFinalProductSearchbox(data);
@@ -171,11 +170,11 @@ function SearchBoxNavbar() {
                   window.location.href = `/drivers/all?search=${encodeURIComponent(activeSearch.trim())}`;
                 }
               }}
-              className=" w-full transform transition-all ease-in-out duration-500 bg-white shadow-md border-black border-2 focus:border-none z-102"
+              className=" w-full transform transition-all ease-in-out duration-500 bg-background shadow-md border-foreground border-2 focus:border-none z-102"
             />
           {/* </div> */}
           <div className="w-full relative">
-          <div className={`${activeSearch.trim() === "" ? 'hidden' : 'absolute z-105 w-full block border-2 top-1 bg-white max-h-[400px] overflow-y-auto p-2 rounded-lg shadow-2xl'}`}>
+          <div className={`${activeSearch.trim() === "" ? 'hidden' : 'absolute z-105 w-full block border-2 top-1 bg-background max-h-[400px] overflow-y-auto p-2 rounded-lg shadow-2xl'}`}>
             <div className="border-y-2 border-gray-100">
               <div className={`overflow-y-auto`}> 
                 {foundProducts.length!=0?
@@ -188,7 +187,7 @@ function SearchBoxNavbar() {
                         window.location.href = `/products/${value.slug}`
                       }}
                     >                          
-                      <div className="p-2 flex border-b-2 border-gray-100 hover:bg-black hover:text-red-500 hover:font-bold hover:rounded-md transfom duration-200">
+                      <div className="p-2 flex border-b-2 border-gray-100 hover:bg-black hover:text-primary hover:font-bold hover:rounded-md transfom duration-200">
                       <div className="relative pr-4">
                         <div className="absolute flex items-center justify-center z-[-1] w-10 h-10">
                           <Loader2 className="animate-spin text-gray-500" size={20} />

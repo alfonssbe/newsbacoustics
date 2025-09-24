@@ -19,7 +19,7 @@ export default function Footer() {
                 <div className="w-full max-w-[200px] h-auto rounded-lg shadow-lg transition-transform hover:scale-105">
                   <Link href={pathname.includes('sbaudience') ? '/sbaudience' : '/'}>
                     <LazyImageClickable
-                      src={pathname.includes('sbaudience') ? '/images/sbaudience/logo_sbaudience.png' : '/images/sbacoustics/logo_sbacoustics_white_clean.webp'}
+                      src={pathname.includes('sbaudience') ? '/images/sbaudience/logo_sbaudience.webp' : '/images/sbacoustics/logo_sbacoustics_white_clean.webp'}
                       alt={pathname.includes('sbaudience') ? "Logo of SB Audience" : "Logo of SB Acoustics"}
                       width={500}
                       height={500}

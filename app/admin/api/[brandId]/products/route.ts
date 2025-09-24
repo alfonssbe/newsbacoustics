@@ -181,54 +181,116 @@ export async function POST(req: Request, props: { params: Promise<{ brandId: str
       })
     }
 
-    const spec = await prismadb.specification.create({
-      data: {
-        impedance :'',
-        dc_resistance_re :'',
-        coil_inductance_le :'',
-        effective_piston_area_sd :'',
-        voice_coil_diameter:'',
-        voice_coil_height:'',
-        air_gap_height :'',
-        linear_coil_travel_pp:'',
-        moving_mass_mms:'',
-        free_air_resonance_fs:'',
-        sensitivity:'',
-        mechanical_q_factor_qms:'',
-        electrical_q_factor_qes:'',
-        total_q_factor_qts :'',
-        force_factor_bi:'',
-        rated_power_handling :'',
-        magnetic_flux_density:'',
-        magnet_weight:'',
-        net_weight :'',
-        equivalent_volume_vas:'',
-        compliance_cms :'',
-        mechanical_loss_rms:'',
-        recommended_frequency_range:'',
-        max_mechanical_cone_excursion_xmech:'',
-        custom_note:'',
-        cone_material:'',
-        dome_material:'',
-        searchbox_desc:'',
-        mounting_diameter:'',
-        productId: product.id,
-        updatedAt: new Date(),
-        createdAt: new Date()
-      }
-    });
+    if(params.brandId === process.env.NEXT_PUBLIC_SB_ACOUSTICS_ID) {
+      const spec = await prismadb.specification.create({
+        data: {
+          impedance :'',
+          dc_resistance_re :'',
+          coil_inductance_le :'',
+          effective_piston_area_sd :'',
+          voice_coil_diameter:'',
+          voice_coil_height:'',
+          air_gap_height :'',
+          linear_coil_travel_pp:'',
+          moving_mass_mms:'',
+          free_air_resonance_fs:'',
+          sensitivity:'',
+          mechanical_q_factor_qms:'',
+          electrical_q_factor_qes:'',
+          total_q_factor_qts :'',
+          force_factor_bi:'',
+          rated_power_handling :'',
+          magnetic_flux_density:'',
+          magnet_weight:'',
+          net_weight :'',
+          equivalent_volume_vas:'',
+          compliance_cms :'',
+          mechanical_loss_rms:'',
+          recommended_frequency_range:'',
+          max_mechanical_cone_excursion_xmech:'',
+          custom_note:'',
+          cone_material:'',
+          dome_material:'',
+          searchbox_desc:'',
+          mounting_diameter:'',
+          productId: product.id,
+          updatedAt: new Date(),
+          createdAt: new Date()
+        }
+      });
+      await prismadb.product.update({
+        where:{
+          id: product.id,
+          brandId: params.brandId
+        },
+        data: {
+          specId: spec.id,
+          updatedBy: session.name,
+          updatedAt: new Date()
+        }
+      });
+    }
+    else if(params.brandId === process.env.NEXT_PUBLIC_SB_AUDIENCE_ID) {
+      const spec = await prismadb.specificationSBAudience.create({
+        data: {
+          nominal_impedance  : '',
+          minimum_impedance : '',
+          aes_power_handling : '',
+          maximum_power_handling : '',
+          sensitivity: '',
+          frequency_range: '',
+          voice_coil_diameter : '',
+          winding_material: '',
+          former_material: '',
+          winding_depth: '',
+          magnetic_gap_depth: '',
+          flux_density: '',
+          magnet: '',
+          basket_material : '',
+          demodulation: '',
+          cone_surround : '',
+          net_air_volume_filled_by_driver: '',
+          spider_profile: '',
+          weather_resistant : '',
+          rdc: '',
+          recommended_crossover_frequency: '',
+          diaphragm_material: '',
+          phase_plug_design: '',
+          total_exit_angle: '',
+          net_air_volume_filled_by_hf_driver: '',
+          nominal_throat_diameter: '',
+          overall_diameter : '',
+          ninety_degrees_mounting_holes_diameter : '',
+          depth: '',
+          net_weight : '',
+          shipping_box : '',
+          gross_weight : '',
+          replacement_diaphragm: '',
+          bolt_circle_diameter : '',
+          baffle_cutout_diameter : '',
+          mounting_depth : '',
+          flange_and_gasket_thickness: '',
+          recone_kit : '',
+          custom_note: '',
+          productId: product.id,
+          updatedAt: new Date(),
+          createdAt: new Date()
+        }
+      });
+      await prismadb.product.update({
+        where:{
+          id: product.id,
+          brandId: params.brandId
+        },
+        data: {
+          specSBAudienceId: spec.id,
+          updatedBy: session.name,
+          updatedAt: new Date()
+        }
+      });
+    }
 
-    await prismadb.product.update({
-      where:{
-        id: product.id,
-        brandId: params.brandId
-      },
-      data: {
-        specId: spec.id,
-        updatedBy: session.name,
-        updatedAt: new Date()
-      }
-    });
+
 
     const kitsId = process.env.NEXT_PUBLIC_KITS_CATEGORY_ID ?? ''
     if (isKits) { //isKits is checked

@@ -11,9 +11,11 @@ function normalizeFractions(text: string): string {
     .replace(/(\d+)\s*[- ]?\s*1\/2/g, (_, num) => `${num}.5`);
 }
 
-const getProductsForSearchbox = async (): Promise<Searchbox[]> => {
+const getProductsForSearchbox = async (path: string): Promise<Searchbox[]> => {
     let productForSearchbox: Array<Searchbox> = [];
-    const response = await fetch(API);
+    const brandId = path.includes('sbaudience') ? process.env.NEXT_PUBLIC_SB_AUDIENCE_ID : process.env.NEXT_PUBLIC_SB_ACOUSTICS_ID
+    const API_EDITED_BRANDID = API.replace('{brandId}', brandId ?? '680c5eee-7ed7-41bc-b14b-4185f8a1c379'); //SBAcoustics ID as default
+    const response = await fetch(API_EDITED_BRANDID);
     if (!response.ok) {
       redirect('/');
     //   throw new Error('Failed to fetch searchbox');
@@ -29,11 +31,11 @@ const getProductsForSearchbox = async (): Promise<Searchbox[]> => {
             let temp: Searchbox = {
                 label: normalizedStr,
                 name: data[i].label.replace(/^\s*\d+(\.\d+)?\s*(?:inch|")\s*/i, ''),
-                size: data[i].size.map((val: string) => normalizeFractions(val)),
-                cat: data[i].cat.map((val: string) => normalizeFractions(val)),
-                subcat: data[i].subcat.map((val: string) => normalizeFractions(val)),
-                subsubcat: data[i].subsubcat.map((val: string) => normalizeFractions(val)),
-                productInKits: data[i].productInKits.map((val: string) => normalizeFractions(val)),
+                size: data[i].size.map((val: string) => normalizeFractions(val)) ?? 'None',
+                cat: data[i].cat.map((val: string) => normalizeFractions(val)) ?? [],
+                subcat: data[i].subcat.map((val: string) => normalizeFractions(val)) ?? [],
+                subsubcat: data[i].subsubcat.map((val: string) => normalizeFractions(val)) ?? [],
+                productInKits: path.includes('sbaudience') ? [] : data[i].productInKits.map((val: string) => normalizeFractions(val)),
                 slug: data[i].slug,
                 url: data[i].url[0].url,
                 info: data[i].info

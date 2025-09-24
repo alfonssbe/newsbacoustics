@@ -575,3 +575,72 @@ export const EmptyMenu: NavbarComponents[] = [
     hasProduct: false
   },
 ]
+
+
+
+
+
+
+//SB AUDIENCE
+export const DriversSBAudienceMenu: NavbarComponents[] = [
+  {
+    title: "Subwoofers",
+    href: "/drivers/subwoofers",
+    parent: "Drivers",
+    url: "",
+    imageDesc: "",
+    priority: "",
+    newProd: false,
+    hasProduct: false
+  },
+  {
+    title: "Horn",
+    href: "/drivers/horn",
+    parent: "Drivers",
+    url: "",
+    imageDesc: "",
+    priority: "",
+    newProd: false,
+    hasProduct: true
+  },
+  {
+    title: "Coaxials",
+    href: "/drivers/coaxials",
+    parent: "Drivers",
+    url: "",
+    imageDesc: "",
+    priority: "",
+    newProd: false,
+    hasProduct: false
+  },
+  {
+    title: "Open Baffle Drivers",
+    href: "/drivers/open-baffle-drivers",
+    parent: "Drivers",
+    url: "",
+    imageDesc: "",
+    priority: "",
+    newProd: false,
+    hasProduct: false
+  },
+  {
+    title: "Woofers",
+    href: "/drivers/woofers",
+    parent: "Drivers",
+    url: "",
+    imageDesc: "",
+    priority: "",
+    newProd: false,
+    hasProduct: false
+  },
+  {
+    title: "Compression Drivers",
+    href: "/drivers/compression-drivers",
+    parent: "Drivers",
+    url: "",
+    imageDesc: "",
+    priority: "",
+    newProd: false,
+    hasProduct: true
+  },
+]
