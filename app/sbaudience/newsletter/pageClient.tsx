@@ -3,14 +3,14 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import axios from "axios";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-import { Label } from "../../../components/ui/label";
-import { Input } from "../../../components/ui/input";
-import { Checkbox } from "../../../components/ui/checkbox";
-import { Button } from "../../../components/ui/button";
-import { useToast } from "../../../components/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/hooks/use-toast";
 import { Send } from "lucide-react";
 import { motion } from 'framer-motion';
-import PageLoader from "../../../components/pageLoader";
+import PageLoader from "@/components/pageLoader";
 
 
 export default function NewsletterClient() {

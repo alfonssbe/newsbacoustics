@@ -1,4 +1,4 @@
-import getSubCatNameBySlug from "@/app/(sbacoustics)/actions/get-SubCat_Name"
+import getSubCatNameBySlug from "@/app/actions/get-SubCat_Name"
 import { Metadata, ResolvingMetadata } from "next"
 
 type Props = {

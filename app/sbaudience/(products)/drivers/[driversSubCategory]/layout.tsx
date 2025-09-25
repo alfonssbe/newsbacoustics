@@ -1,4 +1,4 @@
-import getSubCatNameBySlug from "@/app/(sbacoustics)/actions/get-SubCat_Name"
+import getSubCatNameBySlug from "@/app/actions/get-SubCat_Name"
 import { Metadata, ResolvingMetadata } from "next"
 
 type Props = {
@@ -10,23 +10,23 @@ export async function generateMetadata(props: Props, parent: ResolvingMetadata):
   const { driversSubCategory = '' } = await props.params
   const baseUrl = process.env.NEXT_PUBLIC_ROOT_URL ?? 'http://localhost:3000';
   const [subCatNameResult] = await Promise.allSettled([
-    getSubCatNameBySlug("",driversSubCategory),
+    getSubCatNameBySlug("sbaudience",driversSubCategory),
   ]);
 
   const subCatName = subCatNameResult.status === 'fulfilled' ? subCatNameResult.value : { name: '' };
   const previousImages = (await parent).openGraph?.images || []
-  const logo_URL = `${baseUrl}/images/sbacoustics/logo_sbacoustics_white_clean.webp`
+  const logo_URL = `${baseUrl}/images/sbaudience/logo_sbaudience.webp`
 
   return {
-    title: `${subCatName} | SB Acoustics`,
-    description: `Found out more about ${subCatName} from SB Acoustics!`,
-    applicationName: 'SB Acoustics',
-    keywords: [`${subCatName}`, `${subCatName} SB Acoustics`, `${subCatName} Products by SB Acoustics`],
+    title: `${subCatName} | SB Audience`,
+    description: `Found out more about ${subCatName} from SB Audience!`,
+    applicationName: 'SB Audience',
+    keywords: [`${subCatName}`, `${subCatName} SB Audience`, `${subCatName} Products by SB Audience`],
     openGraph: {
-      title: `${subCatName} | SB Acoustics`,
-      description: `Found out more about ${subCatName} from SB Acoustics!`,
-      url: `${baseUrl}/drivers/${driversSubCategory}`,
-      siteName: "SB Acoustics",
+      title: `${subCatName} | SB Audience`,
+      description: `Found out more about ${subCatName} from SB Audience!`,
+      url: `${baseUrl}/sbaudience/drivers/${driversSubCategory}`,
+      siteName: "SB Audience",
       images: [
         // {
         //   url: logo_URL,
@@ -38,7 +38,7 @@ export async function generateMetadata(props: Props, parent: ResolvingMetadata):
           url: logo_URL,
           width: 800,
           height: 800,
-          alt: `SB Acoustics Logo`,
+          alt: `SB Audience Logo`,
         },
         ...previousImages,
       ],
@@ -47,19 +47,19 @@ export async function generateMetadata(props: Props, parent: ResolvingMetadata):
     },
     twitter: {
       card: "summary_large_image",
-      title: `${subCatName} | SB Acoustics`,
-      description: `Found out more about ${subCatName} from SB Acoustics!`,
+      title: `${subCatName} | SB Audience`,
+      description: `Found out more about ${subCatName} from SB Audience!`,
       images: [
         {
           url: logo_URL,
           width: 800,
           height: 800,
-          alt: `SB Acoustics Logo`,
+          alt: `SB Audience Logo`,
         },
       ],
     },
     alternates: {
-      canonical: `${baseUrl}/drivers/${driversSubCategory}`,
+      canonical: `${baseUrl}/sbaudience/drivers/${driversSubCategory}`,
     },
   }
 }

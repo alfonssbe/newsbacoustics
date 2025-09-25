@@ -8,7 +8,7 @@ import axios from "axios";
 import { Heading } from "@/app/admin/components/ui/heading";
 import { Separator } from "@/app/admin/components/ui/separator";
 import { Button } from "@/app/admin/components/ui/button";
-import { PriorityMenu } from "@/app/(sbacoustics)/types";
+import { PriorityMenu } from "@/app/types";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/app/admin/components/ui/accordion";
 import { Loader } from "@/app/admin/components/ui/loader";
 

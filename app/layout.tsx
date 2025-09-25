@@ -1,16 +1,16 @@
 import { Open_Sans } from 'next/font/google'
 import './globals.css'
 import React from 'react'
-import { Toaster } from '../components/ui/toaster';
+import { Toaster } from '@/components/ui/toaster';
 import { Metadata, Viewport } from 'next';
 import { GoogleAnalytics } from '@next/third-parties/google';
-import ScrollToTop from '../components/scrollToTop';
+import ScrollToTop from '@/components/scrollToTop';
 import { ThemeProvider } from './providers/theme-provider';
-import ChangeTheme from '../components/setTheme';
+import ChangeTheme from '@/components/setTheme';
 import NextTopLoader from 'nextjs-toploader';
 import Image from 'next/image';
-import Navbar from '../components/navbar';
-import Footer from '../components/footer';
+import Navbar from '@/components/navbar';
+import Footer from '@/components/footer';
 
 const font = Open_Sans({ subsets: ['latin'] })
 

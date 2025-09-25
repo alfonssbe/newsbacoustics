@@ -1,7 +1,7 @@
-import getSubCatNameBySlug from "@/app/(sbacoustics)/actions/get-SubCat_Name";
-import getAllProductsBySubSubCategoryJsonLd from "@/app/(sbacoustics)/actions/jsonLd/get-all-products-by-sub-sub-category-jsonld";
+import getSubCatNameBySlug from "@/app/actions/get-SubCat_Name";
+import getAllProductsBySubSubCategoryJsonLd from "@/app/actions/jsonLd/get-all-products-by-sub-sub-category-jsonld";
 import DriversBySubSubCategoryPageClient from "./pageClient";
-import getSubSubCatNameBySlug from "@/app/(sbacoustics)/actions/get-SubSubCat_Name";
+import getSubSubCatNameBySlug from "@/app/actions/get-SubSubCat_Name";
 import { allDriverSubCatForGenerateStaticParams } from "@/lib/navbar-content";
 
 type Props = {

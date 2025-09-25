@@ -1,5 +1,5 @@
-import getSubCatNameBySlug from "@/app/(sbacoustics)/actions/get-SubCat_Name";
-import getAllProductsBySubCategoryJsonLd from "@/app/(sbacoustics)/actions/jsonLd/get-all-products-by-sub-category-jsonld";
+import getSubCatNameBySlug from "@/app/actions/get-SubCat_Name";
+import getAllProductsBySubCategoryJsonLd from "@/app/actions/jsonLd/get-all-products-by-sub-category-jsonld";
 import DriversBySubCategoryPageClient from "./pageClient";
 import { allDriverCatForGenerateStaticParams } from "@/lib/navbar-content";
 
@@ -17,31 +17,31 @@ export default async function DriversbySubCategoryJsonLd(props: Props) {
   const { driversSubCategory = '' } = await props.params;
   const baseUrl = process.env.NEXT_PUBLIC_ROOT_URL ?? 'http://localhost:3000';
   const [subCatNameResult] = await Promise.allSettled([
-    getSubCatNameBySlug("", driversSubCategory),
+    getSubCatNameBySlug("sbaudience", driversSubCategory),
   ]);
 
   const subCatName = subCatNameResult.status === 'fulfilled' ? subCatNameResult.value : { name: '' };
-  const allprodserver = await getAllProductsBySubCategoryJsonLd("", driversSubCategory); // SSR fetch
+  const allprodserver = await getAllProductsBySubCategoryJsonLd("sbaudience", driversSubCategory); // SSR fetch
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "url": `${baseUrl}/drivers/${driversSubCategory}`, 
-    "name": `${subCatName} | SB Acoustics`,
-    "description": `Found out more about ${subCatName} Products from SB Acoustics!`,
+    "url": `${baseUrl}/sbaudience/drivers/${driversSubCategory}`, 
+    "name": `${subCatName} | SB Audience`,
+    "description": `Found out more about ${subCatName} Products from SB Audience!`,
     "itemListElement": allprodserver?.map((driver: any, index: number) => ({
      "@type": "ListItem",
       "position": index + 1,
       "item": {
         "@type": "Product",
-        "url": `${baseUrl}/products/${driver.slug}`,
+        "url": `${baseUrl}/sbaudience/products/${driver.slug}`,
         "name": driver.name,
         "description": driver.name,
         "image": `${baseUrl}${driver.coverUrl}`,
         "sku": driver.slug || driver.id,
         "brand": {
           "@type": "Brand",
-          "name": "SB Acoustics"
+          "name": "SB Audience"
         }
       }
     }))
@@ -53,7 +53,7 @@ export default async function DriversbySubCategoryJsonLd(props: Props) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <h1 className='sr-only'>{subCatName.toString()} | SB Acoustics</h1>
+      <h1 className='sr-only'>{subCatName.toString()} | SB Audience</h1>
       <DriversBySubCategoryPageClient params={props.params} />
     </>
   );

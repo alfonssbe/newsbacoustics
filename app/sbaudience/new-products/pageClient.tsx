@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import NoResults from '@/components/ui/no-results';
-import { NewProduct } from '../types';
-import getAllNewProducts from '../actions/get-all-new-products';
+import { NewProduct } from '@/app/types';
+import getAllNewProducts from '@/app/actions/get-all-new-products';
 import { useEffect, useState } from 'react';
-import { Loader } from '../../../components/ui/loader';
+import { Loader } from '@/components/ui/loader';
 import { LazyImageClickable } from '@/components/lazyImageclickable';
 import { usePathname } from 'next/navigation';
 

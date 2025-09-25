@@ -1,11 +1,11 @@
 "use client"
 
-import { CheckBoxData, Products, SliderData } from "@/app/(sbacoustics)/types";
+import { CheckBoxData, Products, SliderData } from "@/app/types";
 import { useEffect, useState, use } from 'react';
 import { Loader } from "@/components/ui/loader";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import getAllProductsBySlug from "@/app/(sbacoustics)/actions/get-all-products-by-slug";
-import AllDriversandFiltersProducts from "../components/all-filters";
+import getAllProductsBySlug from "@/app/actions/get-all-products-by-slug";
+import AllDriversandFiltersProducts from "@/components/all-drivers-page/all-filters";
 
 function createFilterProps(
   key: string,

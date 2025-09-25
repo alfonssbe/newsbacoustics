@@ -1,6 +1,6 @@
 "use client"
 
-import { Custom_Specifications, SingleProducts } from '@/app/(sbacoustics)/types';
+import { Custom_Specifications, SingleProducts } from '@/app/types';
 import Image from 'next/image';
 import { useEffect, useState, use, useRef } from 'react';
 import {
@@ -11,12 +11,12 @@ import {
     TableHeader,
     TableRow,
   } from '@/components/ui/table';
-import getCustomProduct from '@/app/(sbacoustics)/actions/get-one-custom-props';
+import getCustomProduct from '@/app/actions/get-one-custom-props';
 import { Loader } from '@/components/ui/loader';
 import { ArrowLeft, ArrowRight, Lightbulb, X } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import getProduct from '../actions/get-one-product';
+import getProduct from '@/app/actions/get-one-product';
 
 function createData(
     name: string,

@@ -1,5 +1,5 @@
 import { Metadata } from "next"; 
-import GoogleCaptchaWrapper from "@/app/(sbacoustics)/components/GoogleCaptchaWrapper";
+import GoogleCaptchaWrapper from "@/components/GoogleCaptchaWrapper";
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseUrl = process.env.NEXT_PUBLIC_ROOT_URL ?? 'http://localhost:3000';

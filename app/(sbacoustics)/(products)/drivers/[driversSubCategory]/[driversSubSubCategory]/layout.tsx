@@ -1,5 +1,5 @@
-import getSubCatNameBySlug from "@/app/(sbacoustics)/actions/get-SubCat_Name"
-import getSubSubCatNameBySlug from "@/app/(sbacoustics)/actions/get-SubSubCat_Name"
+import getSubCatNameBySlug from "@/app/actions/get-SubCat_Name"
+import getSubSubCatNameBySlug from "@/app/actions/get-SubSubCat_Name"
 import { Metadata, ResolvingMetadata } from "next"
 
 type Props = {

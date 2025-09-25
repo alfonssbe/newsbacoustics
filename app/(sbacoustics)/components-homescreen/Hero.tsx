@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
-import { FeaturedProducts } from '@/app/(sbacoustics)/types';
-import SwiperCarousel from '../components/ui/swipercarousel';
+import { FeaturedProducts } from '@/app/types';
+import SwiperCarousel from '@/components/swipercarousel';
 
 interface HeroProps {
   featuredProducts: FeaturedProducts[]; // Define the prop type

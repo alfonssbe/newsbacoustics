@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { Download } from "lucide-react";
-import PageLoader from "../../../components/pageLoader";
+import PageLoader from "@/components/pageLoader";
 import Image from "next/image";
 import { LazyImage } from "@/components/lazyImage";
 

@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from 'react'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { Facebook, Globe, Instagram, Loader2, Mail, MapPin, Phone } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
-import { ScrollArea } from '../../../components/ui/scroll-area'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../components/ui/tooltip'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import Link from 'next/link'
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";

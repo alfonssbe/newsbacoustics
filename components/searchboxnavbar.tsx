@@ -3,8 +3,8 @@
 import { Loader2 } from "lucide-react"
 
 import { usePathname } from "next/navigation"
-import { Searchbox } from "../app/(sbacoustics)/types"
-import getProductsForSearchbox from "../app/(sbacoustics)/actions/get-product-for-searchbox"
+import { Searchbox } from "../app/types"
+import getProductsForSearchbox from "@/app/actions/get-product-for-searchbox"
 import { Input } from "./ui/input"
 import Image from "next/image"
 import Fuse from "fuse.js";

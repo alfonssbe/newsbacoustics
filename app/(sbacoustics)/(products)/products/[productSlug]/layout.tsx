@@ -1,4 +1,4 @@
-import getSingleMetadata from "@/app/(sbacoustics)/actions/get-metadata-single-product"
+import getSingleMetadata from "@/app/actions/get-metadata-single-product"
 import { Metadata, ResolvingMetadata } from "next"
 
 type Props = {

@@ -1,4 +1,4 @@
-import getProduct from "@/app/(sbacoustics)/actions/get-one-product";
+import getProduct from "@/app/actions/get-one-product";
 import SingleProductClient from "./pageClient";
 
 type Props = {

@@ -2,20 +2,20 @@
 
 import Image from "next/image";
 import React, { useEffect, useState, use } from "react";
-import SingleProductTable from "@/app/(sbacoustics)/components/single-product-table";
+import SingleProductTable from "@/components/single-product-page/single-product-table";
 import Link from "next/link";
-import SwiperCarouselOneProduct from "@/app/(sbacoustics)/components/ui/swipercarouseloneproduct";
-import { Custom_Specifications, Kits_Finishing, SimilarProdTypes, SingleProducts } from "@/app/(sbacoustics)/types";
-import CustomProductTable from "@/app/(sbacoustics)/components/custom-product-table";
-import SwiperCarouselCoverandCatalogues from "@/app/(sbacoustics)/components/ui/swipercarouselcoverandcatalogues";
-import getSimilar from "@/app/(sbacoustics)/actions/get-similar-products";
+import SwiperCarouselOneProduct from "@/components/single-product-page/swipercarouseloneproduct";
+import { Custom_Specifications, Kits_Finishing, SimilarProdTypes, SingleProducts } from "@/app/types";
+import CustomProductTable from "@/components/single-product-page/custom-product-table";
+import SwiperCarouselCoverandCatalogues from "@/components/single-product-page/swipercarouselcoverandcatalogues";
+import getSimilar from "@/app/actions/get-similar-products";
 import { redirect, usePathname } from "next/navigation";
-import DrawingSection from "@/app/(sbacoustics)/components/ui/drawingSection";
-import FrequencyResponseSection from "@/app/(sbacoustics)/components/ui/freqResSection";
-import getProduct from "@/app/(sbacoustics)/actions/get-one-product";
-import getMultipleDatasheetProduct from "@/app/(sbacoustics)/actions/get-one-multiple-datasheet";
-import getCustomProduct from "@/app/(sbacoustics)/actions/get-one-custom-props";
-import getKitsFinishingProduct from "@/app/(sbacoustics)/actions/get-one-kits-finishing-props";
+import DrawingSection from "@/components/single-product-page/drawingSection";
+import FrequencyResponseSection from "@/components/single-product-page/freqResSection";
+import getProduct from "@/app/actions/get-one-product";
+import getMultipleDatasheetProduct from "@/app/actions/get-one-multiple-datasheet";
+import getCustomProduct from "@/app/actions/get-one-custom-props";
+import getKitsFinishingProduct from "@/app/actions/get-one-kits-finishing-props";
 import { Loader } from "@/components/ui/loader";
 import "./styles.scss";
 import DOMPurify from 'dompurify'; 
@@ -27,9 +27,9 @@ import Captions from "yet-another-react-lightbox/plugins/captions";
 import 'yet-another-react-lightbox/styles.css'
 import 'yet-another-react-lightbox/plugins/thumbnails.css'
 import "yet-another-react-lightbox/plugins/captions.css";
-import SwiperCarouselSimilarProduct from "@/app/(sbacoustics)/components/ui/swipercarouselsimilarproduct";
-import getMultiplemodels3DProduct from "@/app/(sbacoustics)/actions/get-one-multiple-3d-models";
-import getMultipleFRDZMA from "@/app/(sbacoustics)/actions/get-one-multiple-frd-zma-files";
+import SwiperCarouselSimilarProduct from "@/components/single-product-page/swipercarouselsimilarproduct";
+import getMultiplemodels3DProduct from "@/app/actions/get-one-multiple-3d-models";
+import getMultipleFRDZMA from "@/app/actions/get-one-multiple-frd-zma-files";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const all_desc_style = "text-left xl:text-base sm:text-sm text-xs text-black p-0 py-1"

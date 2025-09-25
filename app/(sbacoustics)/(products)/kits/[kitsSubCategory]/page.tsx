@@ -1,5 +1,5 @@
-import getSubCatNameBySlug from '@/app/(sbacoustics)/actions/get-SubCat_Name';
-import getAllProductsBySubCategoryJsonLd from '@/app/(sbacoustics)/actions/jsonLd/get-all-products-by-sub-category-jsonld';
+import getSubCatNameBySlug from '@/app/actions/get-SubCat_Name';
+import getAllProductsBySubCategoryJsonLd from '@/app/actions/jsonLd/get-all-products-by-sub-category-jsonld';
 import KitsByCategoryPageClient from './pageClient';
 import { allKitsCatForGenerateStaticParams } from '@/lib/navbar-content';
 

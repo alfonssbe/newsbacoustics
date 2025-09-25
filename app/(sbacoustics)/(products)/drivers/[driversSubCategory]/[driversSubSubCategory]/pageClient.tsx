@@ -1,11 +1,11 @@
 "use client"
 
-import { CheckBoxData, Products, SliderData } from "@/app/(sbacoustics)/types";
-import getAllProductsBySubSubCategory from '@/app/(sbacoustics)/actions/get-all-products-by-sub-sub-category';
-import AllDriversandFiltersProducts from '../../components/all-filters';
+import { CheckBoxData, Products, SliderData } from "@/app/types";
+import AllDriversandFiltersProducts from '@/components/all-drivers-page/all-filters';
 import { useEffect, useState } from 'react';
 import { Loader } from "@/components/ui/loader";
 import { usePathname } from "next/navigation";
+import getAllProductsBySubSubCategory from "@/app/actions/get-all-products-by-sub-sub-category";
 
 type Props = {
   params: Promise<{ driversSubCategory?: string, driversSubSubCategory?: string }>

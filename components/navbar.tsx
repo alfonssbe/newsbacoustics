@@ -8,14 +8,14 @@ import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMe
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from './ui/sheet';
 import { Button } from './ui/button';
 import { ChevronRight, Loader2, Menu } from 'lucide-react';
-import { NavbarComponents, NavbarProducts, NewProduct, PriorityMenu } from '../app/(sbacoustics)/types';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../app/(sbacoustics)/components/ui/accordionmobilemenu';
-import getAllNewProducts from '../app/(sbacoustics)/actions/get-all-new-products';
+import { NavbarComponents, NavbarProducts, NewProduct, PriorityMenu } from '../app/types';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordionmobilemenu';
+import getAllNewProducts from '@/app/actions/get-all-new-products';
 import SearchBoxNavbar from './searchboxnavbar';
 import { DriversMenu, DriversSBAudienceMenu, EmptyMenu, KitsMenu, MidrangesSubMenu, MidwoofersSubMenu, OEMMidwoofersSubMenu, OEMSubMenu, SubwoofersDefaultSubMenu, TweetersSubMenu, WidebandersDefaultSubMenu, WoofersSubMenu } from '@/lib/navbar-content';
 import { useEffect, useState } from 'react';
 import { getHref } from '@/app/utils/getHref';
-import getAllNavbarContent from '@/app/(sbacoustics)/actions/get-all-navbar-content';
+import getAllNavbarContent from '@/app/actions/get-all-navbar-content';
 
 const styledDropdown = "text-sm px-1 py-2 text-foreground"
 
@@ -798,7 +798,7 @@ function Navbar() {
 
   return ( 
   <div className={`${height > 600 ? 'fixed' : 'absolute'} left-0 z-40 bg-transparent`}>
-    <nav className={`${height > 600 ? 'fixed w-full' : 'w-screen'} xl:px-16 lg:px-12 px-8 py-4 h-fit transition-all duration-200 ease-in-out ${navbarBg ? 'bg-background shadow-lg' : pathname.includes('distributors')? '':''}`}>
+    <nav className={`${height > 600 ? 'fixed w-full' : 'w-screen'} xl:px-16 lg:px-12 px-8 py-4 h-fit transition-all duration-200 ease-in-out ${navbarBg ? 'bg-background shadow-lg shadow-foreground/30' : pathname.includes('distributors')? '':''}`}>
       <div className="flex items-center justify-between">
         <div className="w-1/4 flex">
           <Link

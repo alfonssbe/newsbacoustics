@@ -1,4 +1,4 @@
-import { PriorityMenu } from "@/app/(sbacoustics)/types";
+import { PriorityMenu } from "@/app/types";
 import prismadb from "@/lib/prismadb";
 import { NextResponse } from "next/server";
 

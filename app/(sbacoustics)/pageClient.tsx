@@ -6,13 +6,13 @@ import Catalogues from './components-homescreen/Catalogues';
 import FindUs from './components-homescreen/FindUs';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Loader } from '../../components/ui/loader';
-import { Button } from '../../components/ui/button';
+import { Loader } from '@/components/ui/loader';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import BrandChoice from './components-homescreen/BrandChoice';
-import { FeaturedProducts } from './types';
+import { FeaturedProducts } from '@/app/types';
 import Hero from './components-homescreen/Hero';
-import getAllFeaturedProducts from './actions/get-all-featured-products';
+import getAllFeaturedProducts from '@/app/actions/get-all-featured-products';
 
 export default function LandingPageSBAcousticsClient() {
  const [value, setValue] = useState<FeaturedProducts[]>([]);

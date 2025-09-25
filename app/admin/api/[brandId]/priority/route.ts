@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import prismadb from '@/lib/prismadb';
 import { checkAuth, checkBearerAPI, getSession } from '@/lib/actions';
-import { PriorityMenu } from '@/app/(sbacoustics)/types';
+import { PriorityMenu } from '@/app/types';
 
 export async function POST(req: Request, props: { params: Promise<{ brandId: string }> }) {
   const params = await props.params;

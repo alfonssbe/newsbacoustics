@@ -1,10 +1,10 @@
 "use client"
 
-import getAllProductsBySubCategory from '@/app/(sbacoustics)/actions/get-all-products-by-sub-category';
+import getAllProductsBySubCategory from '@/app/actions/get-all-products-by-sub-category';
 import { useEffect, useState } from 'react';
-import { CachedAllProducts } from '@/app/(sbacoustics)/types';
+import { CachedAllProducts } from '@/app/types';
 import { Loader } from '@/components/ui/loader';
-import AllDriversProducts from '../../drivers/components/all-product';
+import AllDriversProducts from '@/components/all-drivers-page/all-product';
 import { usePathname } from 'next/navigation';
 
 type Props = {

@@ -1,7 +1,6 @@
 import Link from 'next/link';
-import { Download } from 'lucide-react';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/app/(sbacoustics)/components/ui/accordiontechnicals';
-import PageLoader from '../../../components/pageLoader';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordiontechnicals';
+import PageLoader from '@/components/pageLoader';
 import Image from 'next/image';
 
 const all_desc_style = "text-left xl:text-base sm:text-sm text-xs text-black p-0 py-1"

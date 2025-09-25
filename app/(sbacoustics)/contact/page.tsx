@@ -1,6 +1,6 @@
-import Contact from "@/app/(sbacoustics)/components/contact";
-import GoogleCaptchaWrapper from "@/app/(sbacoustics)/components/GoogleCaptchaWrapper";
-import PageLoader from "../../../components/pageLoader";
+import Contact from "@/components/contact";
+import GoogleCaptchaWrapper from "@/components/GoogleCaptchaWrapper";
+import PageLoader from "@/components/pageLoader";
 
 export default function ContactUs() {
   const baseUrl = process.env.NEXT_PUBLIC_ROOT_URL ?? 'http://localhost:3000';

@@ -2,7 +2,7 @@ import prismadb from "@/lib/prismadb";
 import { PriorityForm } from "./components/priority-form";
 import { menuPriority } from "@prisma/client";
 import { DriversMenu, KitsMenu, MidrangesSubMenu, MidwoofersSubMenu, OEMMidwoofersSubMenu, OEMSubMenu, SubwoofersDefaultSubMenu, TweetersSubMenu, WidebandersDefaultSubMenu, WoofersSubMenu } from "@/lib/navbar-content";
-import { NavbarComponents, PriorityMenu } from "@/app/(sbacoustics)/types";
+import { NavbarComponents, PriorityMenu } from "@/app/types";
 
 
 const CategoryPage = async (props: {

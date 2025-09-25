@@ -1,8 +1,8 @@
 "use client"
 
-import PageLoader from "../../../components/pageLoader";
-import { Button } from "../../../components/ui/button";
-import { Card, CardContent } from "../../../components/ui/card";
+import PageLoader from "@/components/pageLoader";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from 'swiper/react';

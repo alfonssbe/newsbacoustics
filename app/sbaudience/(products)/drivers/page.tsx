@@ -1,7 +1,6 @@
 import Link from "next/link";
 import PageLoader from "@/components/pageLoader";
-import { LazyImageClickable } from "@/components/lazyImageclickable";
-import { LazyImageClickableSBAudience } from "../../components/lazyImageclickable";
+import { LazyImageClickableSBAudience } from "../../components/lazyImageclickablesbaudience";
 
 function createData(
   value: string,

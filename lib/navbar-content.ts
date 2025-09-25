@@ -1,4 +1,4 @@
-import { NavbarComponents } from "@/app/(sbacoustics)/types"
+import { NavbarComponents } from "@/app/types"
 
 export const allDriverCatForGenerateStaticParams = [
   'tweeters',

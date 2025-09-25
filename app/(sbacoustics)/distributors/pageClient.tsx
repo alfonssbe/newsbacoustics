@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic";
-import PageLoader from "../../../components/pageLoader";
+import PageLoader from "@/components/pageLoader";
 
 const DynamicMap = dynamic(() => import("./MapComponent"), {
   ssr: false,
