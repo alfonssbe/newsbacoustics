@@ -4,7 +4,7 @@ import { CheckBoxData, Products, SliderData } from "@/app/types";
 import { useEffect, useState } from 'react';
 import { Loader } from "@/components/ui/loader";
 import { usePathname } from "next/navigation";
-import AllDriversandFiltersProducts from "@/components/all-drivers-page/all-filters";
+import AllDriversandFiltersProducts from "@/app/(sbacoustics)/(products)/all-drivers-page/all-filters";
 import getAllProductsBySubCategory from "@/app/(sbacoustics)/actions/get-all-products-by-sub-category";
 
 type Props = {

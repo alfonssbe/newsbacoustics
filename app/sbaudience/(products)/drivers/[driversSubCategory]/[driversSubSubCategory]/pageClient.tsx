@@ -5,7 +5,7 @@ import getAllProductsBySubSubCategory from '@/app/actions/get-all-products-by-su
 import { useEffect, useState } from 'react';
 import { Loader } from "@/components/ui/loader";
 import { usePathname } from "next/navigation";
-import AllDriversandFiltersProducts from "@/components/all-drivers-page/all-filters";
+import AllDriversandFiltersProducts from "@/app/(sbacoustics)/(products)/all-drivers-page/all-filters";
 
 type Props = {
   params: Promise<{ driversSubCategory?: string, driversSubSubCategory?: string }>

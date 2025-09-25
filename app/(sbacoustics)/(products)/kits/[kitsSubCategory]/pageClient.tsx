@@ -4,7 +4,7 @@ import getAllProductsBySubCategory from '@/app/(sbacoustics)/actions/get-all-pro
 import { useEffect, useState } from 'react';
 import { CachedAllProducts } from '@/app/types';
 import { Loader } from '@/components/ui/loader';
-import AllDriversProducts from '@/components/all-drivers-page/all-product';
+import AllDriversProducts from '@/app/(sbacoustics)/(products)/all-drivers-page/all-product';
 import { usePathname } from 'next/navigation';
 
 type Props = {

@@ -5,7 +5,7 @@ import { useEffect, useState, use } from 'react';
 import { Loader } from "@/components/ui/loader";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import getAllProductsBySlug from "@/app/actions/get-all-products-by-slug";
-import AllDriversandFiltersProducts from "@/components/all-drivers-page/all-filters";
+import AllDriversandFiltersProducts from "@/app/(sbacoustics)/(products)/all-drivers-page/all-filters";
 
 function createFilterProps(
   key: string,

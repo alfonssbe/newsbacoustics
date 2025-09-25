@@ -53,6 +53,8 @@ export async function GET(
         include: {
           allCat: true,
           specificationSBAudience: true,
+          hornsspecificationSBAudience: true,
+          thieleSmallParametersSBAudience: true,
           cover_img: true,
           size: true,
         }

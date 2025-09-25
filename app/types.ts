@@ -1,4 +1,4 @@
-import { Specification, SpecificationSBAudience } from "@prisma/client";
+import { HornsSpecificationSBAudience, Specification, SpecificationSBAudience, ThieleSmallParameters } from "@prisma/client";
 
 export interface SubCategoryFilters {
     id: string;
@@ -163,17 +163,19 @@ export interface PriorityMenu{
 
 
 // 🟩 Base Products interface
-export interface BaseProduct<Spec> {
+export interface BaseProduct<Spec = undefined> {
   id: string;
   name: string;
   slug: string;
   coverUrl: string;
   CoverAlt: string;
-  size: Size;
+  size?: Size;
   categories: AllCategory[];
   sub_categories: AllCategory[];
   sub_sub_categories: AllCategory[];
-  specification: Spec;
+  specification?: Spec;
+  // hornsspecificationSBAudience?: HornsSpec; // SB Audience Only
+  // thieleSmallParametersSBAudience?: ThieleSpec; // SB Audience Only
 }
 
 // 🟩 Base AllProductsForHome interface
@@ -233,11 +235,50 @@ export type CachedAllProducts = BaseCachedAllProducts<AllProductsForHome>;
 
 
 // SB AUDIENCE
-export type ProductsSBAudience = BaseProduct<SpecificationSBAudience>;
+// 🟩 Base AllProductsForHome interface
+export interface BaseAllProductsSBAudienceForHome<ProductType> {
+  allProducts: ProductType[];
+  allImpedance: number[];
+  allMaxPower: number[];
+  allSensitivity: number[];
+  allVoiceCoilDiameter: number[];
+  allDiaphragmMaterial: string[];
+  allMagnetMaterial: string[];
+  allNominalThroatDiameter: number[];
+  allFS: number[];
+  allQTS: number[];
+  allXmax: number[];
+  allMms: number[];
+  allNominalCoverageHorizontal: number[];
+  allNominalCoverageVertical: number[];
+  allDirectivityFactor: number[];
+  allDirectivityIndex: number[];
+  allThroatDiameter: number[];
+  allMinimumRecommendedCrossover: number[];
+  allMechanicalConnectionofDriver: string[];
+  allBaffleCutoutDimensionsHorizontal: number[];
+  allBaffleCutoutDimensionsVertical: number[];
+}
 
-export type AllProductsSBAudienceForHome = BaseAllProductsForHome<ProductsSBAudience>;
+export type ProductsSBAudience = BaseProduct<
+  SpecificationSBAudience & {
+    fs: number;
+    qts: number;
+    xmax: number;
+    mms: number;
+    nominalCoverageHorizontal: number;
+    nominalCoverageVertical: number;
+    directivityFactor: number;
+    directivityIndex: number;
+    throatDiameter: number;
+    minimumRecommendedCrossover: number;
+    mechanicalConnectionofDriver: string;
+    baffleCutoutDimensionsHorizontal: number;
+    baffleCutoutDimensionsVertical: number;
+  }
+>;
 
-export type CachedAllProductsSBAudience = BaseCachedAllProducts<AllProductsSBAudienceForHome>;
+export type AllProductsSBAudienceForHome = BaseAllProductsSBAudienceForHome<ProductsSBAudience>;
 
 export interface SingleProductsSBAudience {
     id: string;
@@ -256,6 +297,8 @@ export interface SingleProductsSBAudience {
     sub_categories: AllCategory[];
     sub_sub_categories: AllCategory[];
     specification: SpecificationSBAudience;
+    hornSpecification: HornsSpecificationSBAudience;
+    ThieleSpecification: ThieleSmallParameters;
     isCustom: boolean;
     isCoax: boolean;
 }

@@ -1,11 +1,11 @@
 "use client"
 
-import { CheckBoxData, Products, SliderData } from "@/app/types";
+import { CheckBoxData, Products, ProductsSBAudience, SliderData } from "@/app/types";
 import { useEffect, useState, use } from 'react';
 import { Loader } from "@/components/ui/loader";
 import { usePathname } from "next/navigation";
-import AllDriversandFiltersProducts from "@/components/all-drivers-page/all-filters";
-import getAllProductsBySubCategory from "@/app/actions/get-all-products-by-sub-category";
+import getAllProductsBySubCategory from "@/app/sbaudience/actions/get-all-products-by-sub-category";
+import AllDriversandFiltersProducts from "../../all-drivers-page/all-filters";
 
 type Props = {
   params: Promise<{ driversSubCategory?: string }>
@@ -26,7 +26,7 @@ function removeDuplicates<RangeSliderFilter>(arr: RangeSliderFilter[]): RangeSli
 
 
 export default function DriversBySubCategoryPageClient(props: Props) { 
-  const [allproduct, setAllProducts] = useState<Products[]>([])
+  const [allproduct, setAllProducts] = useState<ProductsSBAudience[]>([])
   const [slider, setSlider] = useState<SliderData[]>([])
   const [checkbox, setCheckbox] = useState<CheckBoxData[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -45,16 +45,17 @@ export default function DriversBySubCategoryPageClient(props: Props) {
         let tempSliderLoop = [];
         let tempCheckboxLoop = [];
         let counterShow = 0;
-        if(driversSubCategory === 'tweeters'){  
+        if(driversSubCategory === 'compression-drivers'){  
           tempSliderLoop.push(
-            createFilterProps('allSensitivity', 'Sensitivity', 'dB', 'sensitivity'),
-            createFilterProps('allAirResonanceFS', 'Free air resonance, Fs', 'Hz', 'free_air_resonance_fs'),
-            createFilterProps('allVoiceCoilDiameter', 'Voice Coil Diameter', 'mm', 'voice_coil_diameter'),
-            createFilterProps('allMountingDiameter', 'Overall Diameter', 'Ø', 'mounting_diameter'),
+            createFilterProps('allImpedance', 'Impedance', '', 'nominal_impedance'),
+            createFilterProps('allMaxPower', 'Max Power', '', 'maximum_power_handling'),
+            createFilterProps('allSensitivity', 'Sensitivity', '', 'sensitivity'),
+            createFilterProps('allVoiceCoilDiameter', 'Voice Coil Diameter', '', 'voice_coil_diameter'),
+            createFilterProps('allNominalThroatDiameter', 'Nominal Throat Diameter', '', 'nominal_throat_diameter'),
           )
           tempSliderLoop.map((value) =>{
             //@ts-ignore
-            const allValueWithoutDuplicates: number[] = removeDuplicates(tempData.allproduct[value.key]);
+            const allValueWithoutDuplicates: number[] = removeDuplicates(tempData[value.key]);
             const allValueWithoutDuplicatesAndNone = allValueWithoutDuplicates.filter(number => !Number.isNaN(number));
             const sortedValues = allValueWithoutDuplicatesAndNone.slice().sort((a, b) => a - b);
             if(sortedValues.length>1){
@@ -75,12 +76,12 @@ export default function DriversBySubCategoryPageClient(props: Props) {
           })
 
           tempCheckboxLoop.push(
-            createFilterProps('domeMaterial', 'Dome Material', '', 'dome_material'),
-            createFilterProps('allImpedanceCheckbox', 'Nominal Impedance', 'Ω', 'impedance')
+            createFilterProps('allDiaphragmMaterial', 'Diaphragm Material', '', 'diaphragm_material'),
+            createFilterProps('allMagnetMaterial', 'Magnet Material', '', 'magnet')
           )
           tempCheckboxLoop.map((value) =>{
             //@ts-ignore
-            const allValueWithoutDuplicates: string[] = removeDuplicates(tempData.allproduct[value.key]);
+            const allValueWithoutDuplicates: string[] = removeDuplicates(tempData[value.key]);
             const allValueWithoutDuplicatesAndNone = allValueWithoutDuplicates.filter(number => number != '');
             const sortedValues = allValueWithoutDuplicatesAndNone.sort()
             if(sortedValues.length>1){
@@ -97,67 +98,47 @@ export default function DriversBySubCategoryPageClient(props: Props) {
           })
 
         }
-        else if(driversSubCategory === 'coaxials'){
+        else if(driversSubCategory === 'horn'){
           tempSliderLoop.push(
-            createFilterProps('parentSize', 'Size', '"', 'size'),
-            createFilterProps('allSensitivity', 'Sensitivity', 'dB', 'sensitivity'),
-            createFilterProps('allQFactorQTS', 'Total Q-factor, Qts', '', 'total_q_factor_qts'),
-            createFilterProps('linearCoilTravelXmax', 'Linear coil travel', 'mm', 'linear_coil_travel_pp'),
-            createFilterProps('Vas', 'Equivalent volume, Vas', 'liters', 'equivalent_volume_vas'),
-            // createFilterProps('allMountingDiameter', 'Overall Diameter', 'Ø', 'mounting_diameter'),
+            createFilterProps('allNominalCoverageHorizontal', 'Nominal Coverage Horizontal', '', 'nominal_coverage_horizontal'),
+            createFilterProps('allNominalCoverageVertical', 'Nominal Coverage Vertical', '', 'nominal_coverage_vertical'),
+            createFilterProps('allDirectivityFactor', 'Directivity Factor', '', 'directivity_factor'),
+            createFilterProps('allDirectivityIndex', 'Directivity Index', '', 'directivity_index'),
+            createFilterProps('allThroatDiameter', 'Throat Diameter', '', 'throat_diameter'),
+            createFilterProps('allMinimumRecommendedCrossover', 'Minimum Recommended Crossover', '', 'minimum_recommended_crossover'),
+            createFilterProps('allBaffleCutoutDimensionsHorizontal', 'Baffle Cutout Dimensions Horizontal', '', 'baffle_cutout_dimensions_front_mount_horizontal'),
+            createFilterProps('allBaffleCutoutDimensionsVertical', 'Baffle Cutout Dimensions Vertical', '', 'baffle_cutout_dimensions_front_mount_vertical'),
+            createFilterProps('allSensitivity', 'Sensitivity', '', 'sensitivity_on_driver'),
           )
 
           tempSliderLoop.map((value) =>{
-            if(value.key==='parentSize'){
-              //@ts-ignore
-              const allValueWithoutDuplicates: number[] = removeDuplicates(tempData.allsizes);
-              const allValueWithoutDuplicatesAndNone = allValueWithoutDuplicates.filter(number => !Number.isNaN(number));
-              const sortedValues = allValueWithoutDuplicatesAndNone.slice().sort((a, b) => a - b);
-              if(sortedValues.length>1){
-                counterShow+=1
-              }
-              sliderRows.push(
-                {
-                  name: value.name, 
-                  value: sortedValues, 
-                  unit: value.unit,
-                  max_index: sortedValues.length - 1,
-                  min_index: 0,
-                  minIndex: 0,
-                  maxIndex: sortedValues.length - 1,
-                  slug: value.filterKey
-                },
-              )
+            //@ts-ignore
+            const allValueWithoutDuplicates: number[] = removeDuplicates(tempData[value.key]);
+            const allValueWithoutDuplicatesAndNone = allValueWithoutDuplicates.filter(number => !Number.isNaN(number));
+            const sortedValues = allValueWithoutDuplicatesAndNone.slice().sort((a, b) => a - b);
+            if(sortedValues.length>1){
+              counterShow+=1
             }
-            else{
-              //@ts-ignore
-              const allValueWithoutDuplicates: number[] = removeDuplicates(tempData.allproduct[value.key]);
-              const allValueWithoutDuplicatesAndNone = allValueWithoutDuplicates.filter(number => !Number.isNaN(number));
-              const sortedValues = allValueWithoutDuplicatesAndNone.slice().sort((a, b) => a - b);
-              if(sortedValues.length>1){
-                counterShow+=1
-              }
-              sliderRows.push(
-                {
-                  name: value.name, 
-                  value: sortedValues, 
-                  unit: value.unit,
-                  max_index: sortedValues.length - 1,
-                  min_index: 0,
-                  minIndex: 0,
-                  maxIndex: sortedValues.length - 1,
-                  slug: value.filterKey
-                },
-              )
-            }
+            sliderRows.push(
+              {
+                name: value.name, 
+                value: sortedValues, 
+                unit: value.unit,
+                max_index: sortedValues.length - 1,
+                min_index: 0,
+                minIndex: 0,
+                maxIndex: sortedValues.length - 1,
+                slug: value.filterKey
+              },
+            )
           })
 
           tempCheckboxLoop.push(
-            createFilterProps('coneMaterial', 'Cone Material', '', 'cone_material'),
+            createFilterProps('allMechanicalConnectionofDriver', 'Mechanical Connection of Driver', '', 'mechanical_connection_of_driver'),
           )
           tempCheckboxLoop.map((value) =>{
             //@ts-ignore
-            const allValueWithoutDuplicates: string[] = removeDuplicates(tempData.allproduct[value.key]);
+            const allValueWithoutDuplicates: string[] = removeDuplicates(tempData[value.key]);
             const allValueWithoutDuplicatesAndNone = allValueWithoutDuplicates.filter(number => number != '');
             let sortedValues = allValueWithoutDuplicatesAndNone.sort()
             if(sortedValues.length>1){
@@ -175,93 +156,67 @@ export default function DriversBySubCategoryPageClient(props: Props) {
         }
         else{
           tempSliderLoop.push(
-            createFilterProps('parentSize', 'Size', '"', 'size'),
-            // createFilterProps('allImpedance', 'Nominal Impedance', 'Ω', 'impedance'),
-            createFilterProps('allAirResonanceFS', 'Free air resonance, Fs', 'Hz', 'free_air_resonance_fs'),
-            createFilterProps('allSensitivity', 'Sensitivity', 'dB', 'sensitivity'),
-            createFilterProps('allQFactorQTS', 'Total Q-factor, Qts', '', 'total_q_factor_qts'),
-            createFilterProps('linearCoilTravelXmax', 'Linear coil travel', 'mm', 'linear_coil_travel_pp'),
-            createFilterProps('Vas', 'Equivalent volume, Vas', 'liters', 'equivalent_volume_vas'),
-            // createFilterProps('allMountingDiameter', 'Overall Diameter', 'Ø', 'mounting_diameter'),
+            createFilterProps('allFS', 'FS', '', 'fs'),
+            createFilterProps('allQTS', 'QTS', '', 'qts'),
+            createFilterProps('allXmax', 'X Max', '', 'x_max'),
+            createFilterProps('allMms', 'Mms', '', 'mms'),
+            createFilterProps('allSensitivity', 'Sensitivity', '', 'sensitivity'),
           )
 
           tempSliderLoop.map((value) =>{
-            if(value.key==='parentSize'){
-              //@ts-ignore
-              const allValueWithoutDuplicates: number[] = removeDuplicates(tempData.allsizes);
-              const allValueWithoutDuplicatesAndNone = allValueWithoutDuplicates.filter(number => !Number.isNaN(number));
-              const sortedValues = allValueWithoutDuplicatesAndNone.slice().sort((a, b) => a - b);
-              if(sortedValues.length>1){
-                counterShow+=1
-              }
-              sliderRows.push(
-                {
-                  name: value.name, 
-                  value: sortedValues, 
-                  unit: value.unit,
-                  max_index: sortedValues.length - 1,
-                  min_index: 0,
-                  minIndex: 0,
-                  maxIndex: sortedValues.length - 1,
-                  slug: value.filterKey
-                },
-              )
-            }
-            else{
-              //@ts-ignore
-              const allValueWithoutDuplicates: number[] = removeDuplicates(tempData.allproduct[value.key]);
-              const allValueWithoutDuplicatesAndNone = allValueWithoutDuplicates.filter(number => !Number.isNaN(number));
-              const sortedValues = allValueWithoutDuplicatesAndNone.slice().sort((a, b) => a - b);
-              if(sortedValues.length>1){
-                counterShow+=1
-              }
-              sliderRows.push(
-                {
-                  name: value.name, 
-                  value: sortedValues, 
-                  unit: value.unit,
-                  max_index: sortedValues.length - 1,
-                  min_index: 0,
-                  minIndex: 0,
-                  maxIndex: sortedValues.length - 1,
-                  slug: value.filterKey
-                },
-              )
-            }
-          })
-
-          tempCheckboxLoop.push(
-            createFilterProps('coneMaterial', 'Cone Material', '', 'cone_material'),
-            createFilterProps('allImpedance', 'Nominal Impedance', 'Ω', 'impedance'),
-          )
-          tempCheckboxLoop.map((value) =>{
             //@ts-ignore
-            const allValueWithoutDuplicates: string[] = removeDuplicates(tempData.allproduct[value.key]);
-            const allValueWithoutDuplicatesAndNone = allValueWithoutDuplicates.filter(number => number != '');
-            let sortedValues = allValueWithoutDuplicatesAndNone.sort()
-            if(value.filterKey === 'impedance'){
-              sortedValues = sortedValues.filter(number => !Number.isNaN(number));
-              sortedValues = sortedValues.slice().map(Number).sort((a, b) => a - b).map(String);
-            }
+            const allValueWithoutDuplicates: number[] = removeDuplicates(tempData[value.key]);
+            const allValueWithoutDuplicatesAndNone = allValueWithoutDuplicates.filter(number => !Number.isNaN(number));
+            const sortedValues = allValueWithoutDuplicatesAndNone.slice().sort((a, b) => a - b);
             if(sortedValues.length>1){
               counterShow+=1
             }
-            checkboxRows.push(
+            sliderRows.push(
               {
                 name: value.name, 
                 value: sortedValues, 
                 unit: value.unit,
-                slug: value.filterKey,
+                max_index: sortedValues.length - 1,
+                min_index: 0,
+                minIndex: 0,
+                maxIndex: sortedValues.length - 1,
+                slug: value.filterKey
               },
             )
           })
+
+          // tempCheckboxLoop.push(
+          //   createFilterProps('coneMaterial', 'Cone Material', '', 'cone_material'),
+          //   createFilterProps('allImpedance', 'Nominal Impedance', 'Ω', 'impedance'),
+          // )
+          // tempCheckboxLoop.map((value) =>{
+          //   //@ts-ignore
+          //   const allValueWithoutDuplicates: string[] = removeDuplicates(tempData[value.key]);
+          //   const allValueWithoutDuplicatesAndNone = allValueWithoutDuplicates.filter(number => number != '');
+          //   let sortedValues = allValueWithoutDuplicatesAndNone.sort()
+          //   if(value.filterKey === 'impedance'){
+          //     sortedValues = sortedValues.filter(number => !Number.isNaN(number));
+          //     sortedValues = sortedValues.slice().map(Number).sort((a, b) => a - b).map(String);
+          //   }
+          //   if(sortedValues.length>1){
+          //     counterShow+=1
+          //   }
+          //   checkboxRows.push(
+          //     {
+          //       name: value.name, 
+          //       value: sortedValues, 
+          //       unit: value.unit,
+          //       slug: value.filterKey,
+          //     },
+          //   )
+          // })
         }
         if(counterShow===0){
           setShow(false)
         }
         setSlider(sliderRows)
         setCheckbox(checkboxRows)
-        setAllProducts(tempData.allproduct.allProducts)
+        setAllProducts(tempData.allProducts)
 
         setTimeout(() => {
           requestAnimationFrame(() => {

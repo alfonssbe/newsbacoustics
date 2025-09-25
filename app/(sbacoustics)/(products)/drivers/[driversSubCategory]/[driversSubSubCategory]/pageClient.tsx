@@ -1,7 +1,7 @@
 "use client"
 
 import { CheckBoxData, Products, SliderData } from "@/app/types";
-import AllDriversandFiltersProducts from '@/components/all-drivers-page/all-filters';
+import AllDriversandFiltersProducts from '@/app/(sbacoustics)/(products)/all-drivers-page/all-filters';
 import { useEffect, useState } from 'react';
 import { Loader } from "@/components/ui/loader";
 import { usePathname } from "next/navigation";

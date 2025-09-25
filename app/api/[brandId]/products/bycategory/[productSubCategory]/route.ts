@@ -31,6 +31,8 @@ export async function GET(req: Request, props: { params: Promise<{ brandId: stri
         include: {
           allCat: true,
           specificationSBAudience: true,
+          hornsspecificationSBAudience: true,
+          thieleSmallParametersSBAudience: true,
           cover_img: true,
           size: true,
         }

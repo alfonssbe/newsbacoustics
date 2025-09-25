@@ -79,13 +79,13 @@ model Product {
   specification    Specification  @relation(fields: [specId], references: [id], onDelete: Cascade)
   customSpecification    Custom_Specification  @relation(fields: [customSpecId], references: [id], onDelete: Cascade)
   specSBAudienceId  String  @default("")
-  specificationSBAudience    SpecificationSBAudience  @relation(fields: [specSBAudienceId], references: [id], onDelete: Cascade)
+  specificationSBAudience    SpecificationSBAudience?  @relation(fields: [specSBAudienceId], references: [id], onDelete: Cascade)
   specSBAudienceHFId  String  @default("")
-  SpecificationHFSBAudience    SpecificationHFSBAudience  @relation(fields: [specSBAudienceHFId], references: [id], onDelete: Cascade)
+  SpecificationHFSBAudience    SpecificationHFSBAudience?  @relation(fields: [specSBAudienceHFId], references: [id], onDelete: Cascade)
   hornsspecSBAudienceId  String  @default("")
-  hornsspecificationSBAudience    HornsSpecificationSBAudience  @relation(fields: [hornsspecSBAudienceId], references: [id], onDelete: Cascade)
+  hornsspecificationSBAudience    HornsSpecificationSBAudience?  @relation(fields: [hornsspecSBAudienceId], references: [id], onDelete: Cascade)
   thielesmallparametersSBAudienceId  String  @default("")
-  thieleSmallParametersSBAudience    ThieleSmallParameters  @relation(fields: [thielesmallparametersSBAudienceId], references: [id], onDelete: Cascade)
+  thieleSmallParametersSBAudience    ThieleSmallParameters?  @relation(fields: [thielesmallparametersSBAudienceId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

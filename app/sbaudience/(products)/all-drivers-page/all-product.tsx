@@ -1,8 +1,7 @@
 "use client";
 
 import NoResults from "@/components/ui/no-results";
-import ProductCard from "@/components/product-card";
-import { activeCheckbox, activeSlider, PriorityMenu, Products } from "@/app/types";
+import { activeCheckbox, activeSlider, PriorityMenu, ProductsSBAudience } from "@/app/types";
 import React, { useEffect, useRef, useState } from "react";
 import AllActiveFilters from "./all-active-filters";
 import { BarChart4, Check, ChevronDown, ChevronUp, Loader2, Trash2, X } from "lucide-react";
@@ -26,12 +25,13 @@ import 'swiper/css/navigation';
 import 'swiper/css/scrollbar';
 import { Navigation, Thumbs, Scrollbar } from 'swiper/modules';
 import getAllPriorityBySubCategory from "@/app/actions/get-all-priority-by-category";
+import ProductCard from "./product-card";
 
 
 interface MainProps {
     allActiveSliderVal: (activeSlider)[]
     allActiveCheckboxVal: (activeCheckbox)[]
-    products: (Products)[]
+    products: (ProductsSBAudience)[]
 };
 
 const AllDriversProducts: React.FC<MainProps> = ({
@@ -42,7 +42,7 @@ const AllDriversProducts: React.FC<MainProps> = ({
     const [activeNameCompare, setActiveNameCompare] = useState<string[]>([]);
     const [activeImgUrlCompare, setActiveImgUrlCompare] = useState<string[]>([]);
 
-    const [allFeaturedProducts, setAllFeaturedProducts] = useState<Products[]>([])
+    const [allFeaturedProducts, setAllFeaturedProducts] = useState<ProductsSBAudience[]>([])
     const [hoveredDriver, setHoveredDriver] = useState<{ [key: string]: boolean }>({});
     const { toast } = useToast()    
     const [isButtonVisible, setIsButtonVisible] = useState(false);
@@ -56,7 +56,7 @@ const AllDriversProducts: React.FC<MainProps> = ({
     
 
     const pathname = usePathname()
-    const params = pathname.split('/').slice(1);
+    const params = pathname.split('/').slice(2);
 
     useEffect(() => {
         const updateSwiper = () => {
@@ -113,9 +113,9 @@ const AllDriversProducts: React.FC<MainProps> = ({
             setActiveImgUrlCompare(imgs);
             
 
-            let finishedSliderProducts: Products [] = []
-            let finishedCheckboxProducts: Products[] = []
-            let tempShowed: Products[][] = [];
+            let finishedSliderProducts: ProductsSBAudience [] = []
+            let finishedCheckboxProducts: ProductsSBAudience[] = []
+            let tempShowed: ProductsSBAudience[][] = [];
             if(params.length === 2){
                 if(params[1] === 'all') {
                     setFinalBreadcrumb([params[0], 'All Drivers'])
@@ -136,13 +136,8 @@ const AllDriversProducts: React.FC<MainProps> = ({
                     if (indexslider === 0) {
                         products.forEach((product) => {
                             let productValue = 0
-                            if(slider.slug==='size'){
-                                productValue = Number(product.size.value)
-                            }
-                            else{
-                                //@ts-ignore
-                                productValue = Number(product.specification[slider.slug]);
-                            }
+                            //@ts-ignore
+                            productValue = Number(product.specification[slider.slug]);
                             const bottomValue = Number(slider.bottomRealVal);
                             const topValue = Number(slider.topRealVal);
             
@@ -153,13 +148,8 @@ const AllDriversProducts: React.FC<MainProps> = ({
                     } else {
                         tempShowed[indexslider - 1].forEach((product) => {
                             let productValue = 0
-                            if(slider.slug==='size'){
-                                productValue = Number(product.size.value)
-                            }
-                            else{
-                                //@ts-ignore
-                                productValue = Number(product.specification[slider.slug]);
-                            }
+                            //@ts-ignore
+                            productValue = Number(product.specification[slider.slug]);
                             const bottomValue = Number(slider.bottomRealVal);
                             const topValue = Number(slider.topRealVal);
             
@@ -179,7 +169,7 @@ const AllDriversProducts: React.FC<MainProps> = ({
             }
 
             if (allActiveCheckboxVal.length !== 0) {
-                let finalTempProduct: Record<string, Products[]> = {};
+                let finalTempProduct: Record<string, ProductsSBAudience[]> = {};
                 let checkboxCategories: string[] = [];
 
                 allActiveCheckboxVal.forEach((checkbox) => {
@@ -207,7 +197,7 @@ const AllDriversProducts: React.FC<MainProps> = ({
                     });
                 });
 
-                let tempFinished: Products[] = [];
+                let tempFinished: ProductsSBAudience[] = [];
                 let productCountMap = new Map<string, number>();
 
                 checkboxCategories.map((category) => {
@@ -231,7 +221,7 @@ const AllDriversProducts: React.FC<MainProps> = ({
                 finishedCheckboxProducts = products
             }
 
-            let FinalFeatured: Products[] = []
+            let FinalFeatured: ProductsSBAudience[] = []
             for (const checkboxproducts of finishedCheckboxProducts) {
                 for (const sliderproducts of finishedSliderProducts) {
                     if(checkboxproducts.name === sliderproducts.name){
@@ -509,7 +499,7 @@ const AllDriversProducts: React.FC<MainProps> = ({
                 {!loadFinished && <div className="h-screen"></div>}
                 {loadFinished && allFeaturedProducts.length === 0 && <NoResults />}
                 <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {allFeaturedProducts.map((item: Products, i) => (
+                    {allFeaturedProducts.map((item: ProductsSBAudience, i) => (
                         <div key={i} className="px-2 pt-12 relative" onMouseEnter={() => handleHover(item.id)} onMouseLeave={() => handleHoverLeave(item.id)}>
                             <div
                                 className={`lg:block hidden absolute top-12 right-4 z-30`}
