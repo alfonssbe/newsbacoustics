@@ -20,21 +20,40 @@ export async function GET(req: Request, props: { params: Promise<{ brandId: stri
 
     const productIds = productIdbyCat.map((value) => value.productId)
 
-    const product = await prismadb.product.findMany({
-      where: {
-        id:{
-          in: productIds
+    if(params.brandId === process.env.NEXT_PUBLIC_SB_AUDIENCE_ID) {     
+      const product = await prismadb.product.findMany({
+        where: {
+          id:{
+            in: productIds
+          },
+          brandId: params.brandId
         },
-        brandId: params.brandId
-      },
-      include: {
-        allCat: true,
-        specification: true,
-        cover_img: true,
-        size: true,
-      }
-    });
-    return NextResponse.json(product);
+        include: {
+          allCat: true,
+          specificationSBAudience: true,
+          cover_img: true,
+          size: true,
+        }
+      });
+      return NextResponse.json(product);
+    }
+    else{
+      const product = await prismadb.product.findMany({
+        where: {
+          id:{
+            in: productIds
+          },
+          brandId: params.brandId
+        },
+        include: {
+          allCat: true,
+          specification: true,
+          cover_img: true,
+          size: true,
+        }
+      });
+      return NextResponse.json(product);
+    }
   } catch (error) {
     console.log('[PRODUCT_BY_SUB_CATEGORY_GET]', error);
     return new NextResponse("Internal error", { status: 500 });

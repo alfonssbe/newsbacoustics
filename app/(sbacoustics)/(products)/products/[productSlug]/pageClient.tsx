@@ -5,14 +5,14 @@ import React, { useEffect, useState, use } from "react";
 import SingleProductTable from "@/components/single-product-page/single-product-table";
 import Link from "next/link";
 import SwiperCarouselOneProduct from "@/components/single-product-page/swipercarouseloneproduct";
-import { Custom_Specifications, Kits_Finishing, SimilarProdTypes, SingleProducts } from "@/app/types";
+import { Kits_Finishing, SimilarProdTypes, SingleProducts } from "@/app/types";
 import CustomProductTable from "@/components/single-product-page/custom-product-table";
 import SwiperCarouselCoverandCatalogues from "@/components/single-product-page/swipercarouselcoverandcatalogues";
 import getSimilar from "@/app/actions/get-similar-products";
 import { redirect, usePathname } from "next/navigation";
 import DrawingSection from "@/components/single-product-page/drawingSection";
 import FrequencyResponseSection from "@/components/single-product-page/freqResSection";
-import getProduct from "@/app/actions/get-one-product";
+import getProduct from "@/app/(sbacoustics)/actions/get-one-product";
 import getMultipleDatasheetProduct from "@/app/actions/get-one-multiple-datasheet";
 import getCustomProduct from "@/app/actions/get-one-custom-props";
 import getKitsFinishingProduct from "@/app/actions/get-one-kits-finishing-props";
@@ -31,6 +31,7 @@ import SwiperCarouselSimilarProduct from "@/components/single-product-page/swipe
 import getMultiplemodels3DProduct from "@/app/actions/get-one-multiple-3d-models";
 import getMultipleFRDZMA from "@/app/actions/get-one-multiple-frd-zma-files";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Custom_Specification } from "@prisma/client";
 
 const all_desc_style = "text-left xl:text-base sm:text-sm text-xs text-black p-0 py-1"
 const all_sub_title_style = "text-left font-bold xl:text-2xl lg:text-xl md:text-lg sm:text-md text-black"
@@ -46,7 +47,7 @@ export default function SingleProductClient(props: Props) {
     const [models3D, setmodels3D] = useState<Kits_Finishing[]>([]);
     const [frdZmaFiles, setfrdZmaFiles] = useState<Kits_Finishing[]>([]);
     const [similarprod, setsimilarprod] = useState<SimilarProdTypes[]>([]);
-    const [customProps, setcustomProps] = useState<Custom_Specifications | null>(null);
+    const [customProps, setcustomProps] = useState<Custom_Specification | null>(null);
     const [kitsFinishing, setkitsFinishing] = useState<Kits_Finishing[] | null>(null);
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -67,7 +68,7 @@ export default function SingleProductClient(props: Props) {
                 let temp3dmodels = await getMultiplemodels3DProduct(pathname, productSlug) ?? []
                 let tempfrdzmafiles = await getMultipleFRDZMA(pathname, productSlug) ?? []
                 let tempsimilarprod = await getSimilar(pathname, productSlug)
-                let tempcustomProps: Custom_Specifications | null = null;
+                let tempcustomProps: Custom_Specification | null = null;
                 let tempkitsFinishing: Kits_Finishing[] | null = null;
                 // let datasheetCatalogues: Kits_Finishing[] | null = null;
                 if (tempdata.isCustom) {

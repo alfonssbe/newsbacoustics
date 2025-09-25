@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
-import { Custom_Specifications } from '@/app/types';
+import { Custom_Specification } from '@prisma/client';
 
 function createData(
   specs: string,
@@ -9,7 +9,7 @@ function createData(
   return { specs, value, unit };
 }
 
-export default function CustomProductTable(spec: Custom_Specifications, styling: string) {
+export default function CustomProductTable(spec: Custom_Specification, styling: string) {
     let customNote = spec.custom_note_for_spec
     const notesArray = customNote
       .split(/\r?\n/) // split by newline

@@ -1,6 +1,6 @@
 "use client"
 
-import { Custom_Specifications, SingleProducts } from '@/app/types';
+import { SingleProducts } from '@/app/types';
 import Image from 'next/image';
 import { useEffect, useState, use, useRef } from 'react';
 import {
@@ -16,7 +16,8 @@ import { Loader } from '@/components/ui/loader';
 import { ArrowLeft, ArrowRight, Lightbulb, X } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import getProduct from '@/app/actions/get-one-product';
+import getProduct from '@/app/(sbacoustics)/actions/get-one-product';
+import { Custom_Specification } from '@prisma/client';
 
 function createData(
     name: string,
@@ -29,7 +30,7 @@ function createData(
 const ProductBySubCategoryPage = () => {
     const router = useRouter();
     const [finalFetchedProducts, setFinalFetchedProducts] = useState<SingleProducts[]>([])
-    const [finalCustomSpecProducts, setFinalCustomSpecProducts] = useState<Custom_Specifications[]>([])
+    const [finalCustomSpecProducts, setFinalCustomSpecProducts] = useState<Custom_Specification[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [customProd, setCustomProd] = useState<boolean>(false)
     const [kitsProd, setKitsProd] = useState<boolean>(false)
@@ -122,7 +123,7 @@ const ProductBySubCategoryPage = () => {
             try {
                 document.body.style.overflow = 'hidden';
                 let fetchedProducts: SingleProducts[] = []
-                let customSpecProducts: Custom_Specifications[] = []
+                let customSpecProducts: Custom_Specification[] = []
                 const decodedSlugs = decodeURIComponent(localStorage.getItem("selectedComparison") || '');
                 const slugArray = decodedSlugs.split(',');
                 slugArray.pop()
@@ -136,7 +137,7 @@ const ProductBySubCategoryPage = () => {
                         if(temp.isKits){
                             setKitsProd(true)
                         }
-                        let tempCustom: Custom_Specifications = await getCustomProduct(pathname, value)
+                        let tempCustom: Custom_Specification = await getCustomProduct(pathname, value)
                         customSpecProducts.push(tempCustom)
                         fetchedProducts.push(temp);
                     })

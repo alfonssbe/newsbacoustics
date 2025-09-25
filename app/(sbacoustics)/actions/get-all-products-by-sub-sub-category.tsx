@@ -1,4 +1,5 @@
-import { AllProductsForHome, CachedAllProducts, Products, Size, Specifications } from "@/app/types";
+import { AllProductsForHome, CachedAllProducts, Products, Size } from "@/app/types";
+import { Specification } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 const API=`${process.env.NEXT_PUBLIC_ROOT_URL}/${process.env.NEXT_PUBLIC_FETCH_ALL_PRODUCTS_BY_SUB_SUB_CATEGORY}`;
@@ -148,7 +149,7 @@ const getAllProductsBySubSubCategory = async (path: string, subcategory: string,
     }
 
 
-    let specific: Specifications = {
+    let specific: Specification = {
       impedance: data[i].specification.impedance,
       dc_resistance_re: data[i].specification.dc_resistance_re,
       coil_inductance_le: data[i].specification.coil_inductance_le,
@@ -177,6 +178,11 @@ const getAllProductsBySubSubCategory = async (path: string, subcategory: string,
       cone_material: data[i].specification.cone_material,
       dome_material: data[i].specification.dome_material,
       mounting_diameter: data[i].specification.mounting_diameter,
+      id: '',
+      searchbox_desc: '',
+      productId: data[i].id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
       
     }
     let product: Products = {

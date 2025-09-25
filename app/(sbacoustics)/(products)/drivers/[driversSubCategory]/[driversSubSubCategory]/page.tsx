@@ -1,8 +1,8 @@
 import getSubCatNameBySlug from "@/app/actions/get-SubCat_Name";
-import getAllProductsBySubSubCategoryJsonLd from "@/app/actions/jsonLd/get-all-products-by-sub-sub-category-jsonld";
 import DriversBySubSubCategoryPageClient from "./pageClient";
 import getSubSubCatNameBySlug from "@/app/actions/get-SubSubCat_Name";
 import { allDriverSubCatForGenerateStaticParams } from "@/lib/navbar-content";
+import getAllProductsBySubSubCategoryJsonLd from "@/app/(sbacoustics)/actions/jsonLd/get-all-products-by-sub-sub-category-jsonld";
 
 type Props = {
   params: Promise<{ driversSubCategory?: string , driversSubSubCategory?: string }>

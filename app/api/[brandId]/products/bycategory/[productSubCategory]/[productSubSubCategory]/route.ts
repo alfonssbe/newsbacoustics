@@ -41,21 +41,41 @@ export async function GET(
 
     const finalProductIds = productIdsSubCat.filter(id => productIdsSubSubCat.includes(id));
 
-    const product = await prismadb.product.findMany({
-      where: {
-        id:{
-          in: finalProductIds
+
+    if(params.brandId === process.env.NEXT_PUBLIC_SB_AUDIENCE_ID) {     
+      const product = await prismadb.product.findMany({
+        where: {
+          id:{
+            in: finalProductIds
+          },
+          brandId: params.brandId
         },
-        brandId: params.brandId
-      },
-      include: {
-        allCat: true,
-        specification: true,
-        cover_img: true,
-        size: true,
-      }
-    });
-    return NextResponse.json(product);
+        include: {
+          allCat: true,
+          specificationSBAudience: true,
+          cover_img: true,
+          size: true,
+        }
+      });
+      return NextResponse.json(product);
+    }
+    else{
+      const product = await prismadb.product.findMany({
+        where: {
+          id:{
+            in: finalProductIds
+          },
+          brandId: params.brandId
+        },
+        include: {
+          allCat: true,
+          specification: true,
+          cover_img: true,
+          size: true,
+        }
+      });
+      return NextResponse.json(product);
+    }
   } catch (error) {
     console.log('[PRODUCT_BY_SUB_SUB_CATEGORY_GET]', error);
     return new NextResponse("Internal error", { status: 500 });

@@ -1,10 +1,11 @@
-import { AllCategory, AllProductsForHome, CachedAllProducts, Products, Size, Specifications } from "@/app/types";
+import { AllProductsForHome_ADP, CachedAllProducts_ADP, Products_ADP, Size, Specifications_ADP } from "@/app/types";
+import { DriversMenu, KitsMenu } from "@/lib/navbar-content";
 import { redirect } from "next/navigation";
 
-const API=`${process.env.NEXT_PUBLIC_ROOT_URL}/${process.env.NEXT_PUBLIC_FETCH_ALL_PRODUCTS_BY_SUB_CATEGORY}`;
+const API=`${process.env.NEXT_PUBLIC_ROOT_URL}/${process.env.NEXT_PUBLIC_FETCH_ALL_PRODUCTS_BY_SLUG}`;
 
-const getAllProductsBySubCategory = async (path: string, subcategory: string): Promise<CachedAllProducts> => {
-  let allProducts: Array<Products> = []
+const getAllProductsBySlug = async (path: string, slug: string): Promise<CachedAllProducts_ADP> => {
+  let allProducts: Array<Products_ADP> = []
 
   let allSensitivity: Array<number> = []
   let allAirResonanceFS: Array<number> = []
@@ -22,9 +23,13 @@ const getAllProductsBySubCategory = async (path: string, subcategory: string): P
   let Vas: Array<number> = []
   let coneMaterial: Array<string> = []
 
+  let allMaterial: Array<string> = []
+
+  let allSubCategory: Array<string> = []
+
   const brandId = path.includes('sbaudience') ? process.env.NEXT_PUBLIC_SB_AUDIENCE_ID : process.env.NEXT_PUBLIC_SB_ACOUSTICS_ID
   const API_EDITED_BRANDID = API.replace('{brandId}', brandId ?? '680c5eee-7ed7-41bc-b14b-4185f8a1c379'); //SBAcoustics ID as default
-  const API_EDITED = API_EDITED_BRANDID.replace('{productSubCategory}', subcategory)
+  const API_EDITED = API_EDITED_BRANDID.replace('{allSlugId}', slug)
   const response = await fetch(API_EDITED);
   if (!response.ok) {
     redirect('/');
@@ -37,70 +42,6 @@ const getAllProductsBySubCategory = async (path: string, subcategory: string): P
 
   for (let i = 0; i < data.length; i++) {
     if(data[i].cover_img.length>0){
-      if(subcategory==='tweeters'){
-        //Dome Material
-        if(data[i].specification.dome_material!=null){
-          domeMaterial.push(data[i].specification.dome_material)
-        }
-        //Impedance
-        if(data[i].specification.impedance!=null){
-          allImpedanceCheckbox.push(data[i].specification.impedance)
-        }
-        //Sensitivity
-        if(data[i].specification.sensitivity!=null){
-          allSensitivity.push(Number(data[i].specification.sensitivity))
-        }
-        //Air Resonance FS
-        if(data[i].specification.free_air_resonance_fs!=null){
-          allAirResonanceFS.push(Number(data[i].specification.free_air_resonance_fs))
-        }
-        //Voice Coil Diameter
-        if(data[i].specification.voice_coil_diameter!=null){
-          allVoiceCoilDiameter.push(Number(data[i].specification.voice_coil_diameter))
-        }
-        //Mounting Diameter
-        if(data[i].specification.mounting_diameter!=null){
-          allMountingDiameter.push(Number(data[i].specification.mounting_diameter))
-        }
-      }
-      else if(subcategory==='coaxials'){
-        if(data[i].size!=null){
-          let size2: Size = {
-            label: data[i].size.value,
-            value: Number(data[i].size.name)
-          }
-          if (!parentSize.some((size) => size === size2.value)) {
-            parentSize.push(size2.value);
-          }
-          size = size2
-        }
-        //Sensitivity
-        if(data[i].specification.sensitivity!=null){
-          allSensitivity.push(Number(data[i].specification.sensitivity))
-        }
-        //Q Factor QTS
-        if(data[i].specification.total_q_factor_qts!=null){
-          allQFactorQTS.push(Number(data[i].specification.total_q_factor_qts))
-        }
-        //Linear Coil Travel XMax
-        if(data[i].specification.linear_coil_travel_pp!=null){
-          linearCoilTravelXmax.push(Number(data[i].specification.linear_coil_travel_pp))
-        }
-        //Vas
-        if(data[i].specification.equivalent_volume_vas!=null){
-          Vas.push(Number(data[i].specification.equivalent_volume_vas))
-        }
-        //Cone Material
-        if(data[i].specification.cone_material!=null){
-          coneMaterial.push(data[i].specification.cone_material)
-        }
-        // //Mounting Diameter
-        // if(data[i].specification.mounting_diameter!=null){
-        //   allMountingDiameter.push(Number(data[i].specification.mounting_diameter))
-        // }
-      }
-      else{
-        //Size
         if(data[i].size!=null){
           let size2: Size = {
             label: data[i].size.value,
@@ -136,18 +77,48 @@ const getAllProductsBySubCategory = async (path: string, subcategory: string): P
           Vas.push(Number(data[i].specification.equivalent_volume_vas))
         }
         //Cone Material
-        if(data[i].specification.cone_material!=null){
+        if(data[i].specification.cone_material!=null && data[i].specification.cone_material!=''){
           coneMaterial.push(data[i].specification.cone_material)
+          allMaterial.push(data[i].specification.cone_material)
         }
-        // //Mounting Diameter
-        // if(data[i].specification.mounting_diameter!=null){
-        //   allMountingDiameter.push(Number(data[i].specification.mounting_diameter))
-        // }
-      }
+        //dome Material
+        if(data[i].specification.dome_material!=null && data[i].specification.dome_material!=''){
+          domeMaterial.push(data[i].specification.dome_material)
+          allMaterial.push(data[i].specification.dome_material)
+        }
+        
+        //All Sub Category
+        let foundWidebanders = false
+        let foundfullranges = false
+        const found = data[i].allCat.find(
+          (val: any) =>
+            val.type === "Sub Category" &&
+            (DriversMenu.some((value) => value.title === val.name) || KitsMenu.some((value) => value.title === val.name))
+        );
+        if(found) {
+          allSubCategory.push(found.name)
+        }
+        else {
+          //Widebanders / Full Ranges
+          foundWidebanders = data[i].allCat.some(
+            (val: any) => val.type === "Sub Category" && val.name === "Widebanders"
+          );
+          if (foundWidebanders) {
+            allSubCategory.push('Widebanders')
+          }
+          else{
+            foundfullranges = data[i].allCat.some(
+              (val: any) => val.type === "Sub Category" && val.name === "Full Ranges"
+            );
+            if(foundfullranges) {
+              allSubCategory.push('Full Ranges')
+            }
+          }
+        }
 
       
 
-      let specific: Specifications = {
+      let specific: Specifications_ADP = {
         impedance: data[i].specification.impedance,
         dc_resistance_re: data[i].specification.dc_resistance_re,
         coil_inductance_le: data[i].specification.coil_inductance_le,
@@ -176,8 +147,24 @@ const getAllProductsBySubCategory = async (path: string, subcategory: string): P
         cone_material: data[i].specification.cone_material,
         dome_material: data[i].specification.dome_material,
         mounting_diameter: data[i].specification.mounting_diameter,
+        id: '',
+        searchbox_desc: '',
+        productId: data[i].id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        all_material: 
+        (data[i].specification.cone_material!=null && data[i].specification.cone_material!='') ? 
+          data[i].specification.cone_material 
+        : 
+        (data[i].specification.dome_material!=null && data[i].specification.dome_material!='') ? 
+          data[i].specification.dome_material 
+        :
+        '',
+        all_sub_category: found?.name ?? 
+          (foundWidebanders ? 'Widebanders' : foundfullranges ? 'Full Ranges' : '')
       }
-      let product: Products = {
+      // data[i].name.toLowerCase().includes('kapton') && console.log("data[i].specification.cone_material: ", data[i].specification.cone_material, ' | data[i].specification.dome_material: ', data[i].specification.dome_material)
+      let product: Products_ADP = {
         id: data[i].id,
         coverUrl: data[i].cover_img[0].url,
         CoverAlt: data[i].slug,
@@ -193,7 +180,7 @@ const getAllProductsBySubCategory = async (path: string, subcategory: string): P
     }
   }
 
-  let allProducts_Final : AllProductsForHome = {
+  let allProducts_Final : AllProductsForHome_ADP = {
     allProducts,
     allSensitivity,
     allAirResonanceFS,
@@ -206,9 +193,11 @@ const getAllProductsBySubCategory = async (path: string, subcategory: string): P
     linearCoilTravelXmax,
     Vas,
     coneMaterial,
+    allMaterial,
+    allSubCategory
   }
 
-  let everything : CachedAllProducts = {
+  let everything : CachedAllProducts_ADP = {
     allproduct: allProducts_Final,
     allsizes: parentSize,
   }
@@ -216,5 +205,5 @@ const getAllProductsBySubCategory = async (path: string, subcategory: string): P
   return everything;
 };
 
-export default getAllProductsBySubCategory;
+export default getAllProductsBySlug;
 

@@ -1,10 +1,10 @@
+import { Custom_Specification } from "@prisma/client";
 import { redirect } from "next/navigation";
-import { Custom_Specifications } from "@/app/types";
 
 
 const API=`${process.env.NEXT_PUBLIC_ROOT_URL}/${process.env.NEXT_PUBLIC_FETCH_ONE_CUSTOM_PRODUCT}`;
 
-const getCustomProduct = async (path: string, customProductSlug: string): Promise<Custom_Specifications> => {
+const getCustomProduct = async (path: string, customProductSlug: string): Promise<Custom_Specification> => {
   const brandId = path.includes('sbaudience') ? process.env.NEXT_PUBLIC_SB_AUDIENCE_ID : process.env.NEXT_PUBLIC_SB_ACOUSTICS_ID
   const API_EDITED_BRANDID = API.replace('{brandId}', brandId ?? '680c5eee-7ed7-41bc-b14b-4185f8a1c379'); //SBAcoustics ID as default
   const API_EDITED = API_EDITED_BRANDID.replace('{customProductSlug}', customProductSlug)
@@ -19,7 +19,7 @@ const getCustomProduct = async (path: string, customProductSlug: string): Promis
   }
 
   if(data.length === 0){
-    let customSpec: Custom_Specifications = {
+    let customSpec: Custom_Specification = {
       customDesc: "",
       frequency_range: "",
       sensitivity: "",
@@ -42,11 +42,15 @@ const getCustomProduct = async (path: string, customProductSlug: string): Promis
       magnetic_flux_density: "",
       magnet_weight: "",
       dome_material: "",
-      custom_note_for_spec: ""
+      custom_note_for_spec: "",
+      id: '',
+      productId: '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
     return customSpec;
   }
-  let customSpec: Custom_Specifications = {
+  let customSpec: Custom_Specification = {
     customDesc: data[0].customDesc,
     frequency_range:data[0].frequency_range,
     sensitivity: data[0].sensitivity,
@@ -69,7 +73,11 @@ const getCustomProduct = async (path: string, customProductSlug: string): Promis
     magnetic_flux_density :data[0].magnetic_flux_density,
     magnet_weight :data[0].magnet_weight,
     dome_material: data[0].dome_material,
-    custom_note_for_spec :data[0].custom_note_for_spec
+    custom_note_for_spec :data[0].custom_note_for_spec,
+    id: '',
+    productId: '',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   }
  
   return customSpec;

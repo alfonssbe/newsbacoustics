@@ -1,9 +1,10 @@
-import { AllCategory, AllProductsForHome, CachedAllProducts, Products, Size, Specifications, SubCategoryFilters } from "@/app/types";
+import { AllCategory, Products, Size, SubCategoryFilters } from "@/app/types";
+import { Specification } from "@prisma/client";
 import { redirect } from "next/navigation";
 
-const API=`${process.env.NEXT_PUBLIC_ROOT_URL}/${process.env.NEXT_PUBLIC_FETCH_ALL_PRODUCTS_BY_SUB_SUB_CATEGORY}`;
+const API=`${process.env.NEXT_PUBLIC_ROOT_URL}/${process.env.NEXT_PUBLIC_FETCH_ALL_PRODUCTS_BY_SUB_CATEGORY}`;
 
-const getAllProductsBySubSubCategoryJsonLd = async (path: string, subcategory: string, subsubcategory: string): Promise<Products[]> => {
+const getAllProductsBySubCategoryJsonLd = async (path: string, subcategory: string): Promise<Products[]> => {
   let allProducts: Array<Products> = []
 
   let size = {} as Size;
@@ -11,12 +12,11 @@ const getAllProductsBySubSubCategoryJsonLd = async (path: string, subcategory: s
 
   const brandId = path.includes('sbaudience') ? process.env.NEXT_PUBLIC_SB_AUDIENCE_ID : process.env.NEXT_PUBLIC_SB_ACOUSTICS_ID
   const API_EDITED_BRANDID = API.replace('{brandId}', brandId ?? '680c5eee-7ed7-41bc-b14b-4185f8a1c379'); //SBAcoustics ID as default
-  const API_EDITED_FIRST = API_EDITED_BRANDID.replace('{productSubCategory}', subcategory)
-  const API_EDITED = API_EDITED_FIRST.replace('{productSubSubCategory}', subsubcategory)
+  const API_EDITED = API_EDITED_BRANDID.replace('{productSubCategory}', subcategory)
   const response = await fetch(API_EDITED);
   if (!response.ok) {
     redirect('/');
-    // throw new Error(`Failed to fetch products by ${subsubcategory}`);
+    // throw new Error(`Failed to fetch products by ${subcategory}`);
   }
   const data = await response.json();
   if (!data) {
@@ -35,35 +35,40 @@ const getAllProductsBySubSubCategoryJsonLd = async (path: string, subcategory: s
       size = size2
     }
 
-    let specific: Specifications = {
-      impedance: "",
-      dc_resistance_re: "",
-      coil_inductance_le: "",
-      effective_piston_area_sd: "",
-      voice_coil_diameter: "",
-      voice_coil_height: "",
-      air_gap_height: "",
-      linear_coil_travel_pp: "",
-      moving_mass_mms: "",
-      free_air_resonance_fs: "",
-      sensitivity: "",
-      mechanical_q_factor_qms: "",
-      electrical_q_factor_qes: "",
-      total_q_factor_qts: "",
-      force_factor_bi: "",
-      rated_power_handling: "",
-      magnetic_flux_density: "",
-      magnet_weight: "",
-      net_weight: "",
-      equivalent_volume_vas: "",
-      compliance_cms: "",
-      mechanical_loss_rms: "",
-      recommended_frequency_range: "",
-      max_mechanical_cone_excursion_xmech: "",
-      custom_note: "",
-      cone_material: "",
-      dome_material: "",
-      mounting_diameter: "",
+    let specific: Specification = {
+      impedance  :'',
+      dc_resistance_re :'',
+      coil_inductance_le :'',
+      effective_piston_area_sd :'',
+      voice_coil_diameter:'',
+      voice_coil_height:'',
+      air_gap_height :'',
+      linear_coil_travel_pp:'',
+      moving_mass_mms:'',
+      free_air_resonance_fs:'',
+      sensitivity:'',
+      mechanical_q_factor_qms:'',
+      electrical_q_factor_qes:'',
+      total_q_factor_qts :'',
+      force_factor_bi:'',
+      rated_power_handling :'',
+      magnetic_flux_density:'',
+      magnet_weight:'',
+      net_weight :'',
+      equivalent_volume_vas:'',
+      compliance_cms :'',
+      mechanical_loss_rms:'',
+      recommended_frequency_range:'',
+      max_mechanical_cone_excursion_xmech:'',
+      custom_note:'',
+      cone_material:'',
+      dome_material:'',
+      searchbox_desc:'',
+      mounting_diameter:'',
+      id: '',
+      productId: '',
+      createdAt: new Date(),
+      updatedAt: new Date(), 
     }
 
     let tempCat: Array<AllCategory> = []
@@ -113,5 +118,5 @@ const getAllProductsBySubSubCategoryJsonLd = async (path: string, subcategory: s
   return allProducts;
 };
 
-export default getAllProductsBySubSubCategoryJsonLd;
+export default getAllProductsBySubCategoryJsonLd;
 

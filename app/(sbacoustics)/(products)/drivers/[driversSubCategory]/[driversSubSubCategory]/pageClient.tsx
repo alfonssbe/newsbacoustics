@@ -5,7 +5,7 @@ import AllDriversandFiltersProducts from '@/components/all-drivers-page/all-filt
 import { useEffect, useState } from 'react';
 import { Loader } from "@/components/ui/loader";
 import { usePathname } from "next/navigation";
-import getAllProductsBySubSubCategory from "@/app/actions/get-all-products-by-sub-sub-category";
+import getAllProductsBySubSubCategory from "@/app/(sbacoustics)/actions/get-all-products-by-sub-sub-category";
 
 type Props = {
   params: Promise<{ driversSubCategory?: string, driversSubSubCategory?: string }>

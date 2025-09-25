@@ -1,4 +1,5 @@
-import { AllCategory, SingleProducts, Size, Specifications } from "@/app/types";
+import { AllCategory, SingleProducts, Size } from "@/app/types";
+import { Specification } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 const API=`${process.env.NEXT_PUBLIC_ROOT_URL}/${process.env.NEXT_PUBLIC_FETCH_ONE_PRODUCT}`;
@@ -81,7 +82,7 @@ const getProduct = async (path: string, productSlug: string): Promise<SingleProd
       size = size2  
     }
 
-    let specific: Specifications = {
+    let specific: Specification = {
       impedance: "",
       dc_resistance_re: "",
       coil_inductance_le: "",
@@ -110,6 +111,11 @@ const getProduct = async (path: string, productSlug: string): Promise<SingleProd
       cone_material: "",
       dome_material: "",
       mounting_diameter: "",
+      id: '',
+      searchbox_desc: '',
+      productId: '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
 
     if(data.specification){
@@ -141,7 +147,12 @@ const getProduct = async (path: string, productSlug: string): Promise<SingleProd
         custom_note: data.specification.custom_note,
         cone_material: data.specification.cone_material,
         dome_material: data.specification.dome_material,
-        mounting_diameter: data.specification.mounting_diameter
+        mounting_diameter: data.specification.mounting_diameter,
+        id: '',
+        searchbox_desc: '',
+        productId: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }
     }
     
@@ -225,6 +236,11 @@ const getProduct = async (path: string, productSlug: string): Promise<SingleProd
       cone_material: "",
       dome_material: "",
       mounting_diameter: "",
+      id: '',
+      searchbox_desc: '',
+      productId: '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     isKits: false,
     isAccessories: false,

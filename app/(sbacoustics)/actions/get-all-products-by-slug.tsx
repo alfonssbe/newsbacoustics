@@ -147,6 +147,11 @@ const getAllProductsBySlug = async (path: string, slug: string): Promise<CachedA
         cone_material: data[i].specification.cone_material,
         dome_material: data[i].specification.dome_material,
         mounting_diameter: data[i].specification.mounting_diameter,
+        id: '',
+        searchbox_desc: '',
+        productId: data[i].id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
         all_material: 
         (data[i].specification.cone_material!=null && data[i].specification.cone_material!='') ? 
           data[i].specification.cone_material 

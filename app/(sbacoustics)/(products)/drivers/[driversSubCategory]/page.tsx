@@ -1,5 +1,5 @@
 import getSubCatNameBySlug from "@/app/actions/get-SubCat_Name";
-import getAllProductsBySubCategoryJsonLd from "@/app/actions/jsonLd/get-all-products-by-sub-category-jsonld";
+import getAllProductsBySubCategoryJsonLd from "@/app/(sbacoustics)/actions/jsonLd/get-all-products-by-sub-category-jsonld";
 import DriversBySubCategoryPageClient from "./pageClient";
 import { allDriverCatForGenerateStaticParams } from "@/lib/navbar-content";
 
