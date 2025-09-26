@@ -2,18 +2,18 @@ import { Metadata } from "next"
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseUrl = process.env.NEXT_PUBLIC_ROOT_URL ?? 'http://localhost:3000';
-  const logo_URL = `${baseUrl}/images/sbacoustics/logo_sbacoustics_white_clean.webp`
+  const logo_URL = `${baseUrl}/images/sbaudience/logo_sbaudience.webp`
 
   return {
-    title: "Drivers and Kits",
-    description: "All Drivers and Kits Products Provided by SB Acoustics",
-    applicationName: 'SB Acoustics',
-    keywords: ["All SB Acoustics Drivers", "All SB Acoustics Kits", "All Drivers Provided by SB Acoustics", "All Kits Provided by SB Acoustics"],
+    title: "Drivers",
+    description: "All Drivers Provided by SB Audience",
+    applicationName: 'SB Audience',
+    keywords: ["All SB Audience Drivers", "All Drivers Provided by SB Audience"],
     openGraph: {
-      title: "Drivers and Kits | SB Acoustics",
-      description: "All Drivers and Kits Products Provided by SB Acoustics",
-      url: `${baseUrl}/products`,
-      siteName: "SB Acoustics",
+      title: "Drivers | SB Audience",
+      description: "All Drivers Provided by SB Audience",
+      url: `${baseUrl}/sbaudience/products`,
+      siteName: "SB Audience",
       images: [
         // {
         //   url: logo_URL,
@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
           url: logo_URL,
           width: 800,
           height: 800,
-          alt: `SB Acoustics Logo`,
+          alt: `SB Audience Logo`,
         },
       ],
       locale: 'id_ID',
@@ -33,19 +33,19 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: "Drivers and Kits | SB Acoustics",
-      description: "All Drivers and Kits Products Provided by SB Acoustics",
+      title: "Drivers | SB Audience",
+      description: "All Drivers Provided by SB Audience",
       images: [
         {
           url: logo_URL,
           width: 800,
           height: 800,
-          alt: `SB Acoustics Logo`,
+          alt: `SB Audience Logo`,
         },
       ],
     },
     alternates: {
-      canonical: `${baseUrl}/products`,
+      canonical: `${baseUrl}/sbaudience/products`,
     },
   }
 }

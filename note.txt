@@ -1,5 +1,10 @@
-
 sbaudience:
-kasih pengecekan get-all-products-by-slug.tsx
-get-one-product.tsx
 
+260925
+- kasih satuan ke tiap tabel
+- tambahin tabel horns & thiele
+- bikin comparison page
+
+250925
+- kasih pengecekan get-all-products-by-slug.tsx
+- get-one-product.tsx

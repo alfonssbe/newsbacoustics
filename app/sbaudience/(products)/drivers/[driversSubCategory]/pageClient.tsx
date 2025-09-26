@@ -5,7 +5,7 @@ import { useEffect, useState, use } from 'react';
 import { Loader } from "@/components/ui/loader";
 import { usePathname } from "next/navigation";
 import getAllProductsBySubCategory from "@/app/sbaudience/actions/get-all-products-by-sub-category";
-import AllDriversandFiltersProducts from "../../all-drivers-page/all-filters";
+import AllDriversandFiltersProducts from "../../components-all-drivers-page/all-filters";
 
 type Props = {
   params: Promise<{ driversSubCategory?: string }>
@@ -100,15 +100,15 @@ export default function DriversBySubCategoryPageClient(props: Props) {
         }
         else if(driversSubCategory === 'horn'){
           tempSliderLoop.push(
-            createFilterProps('allNominalCoverageHorizontal', 'Nominal Coverage Horizontal', '', 'nominal_coverage_horizontal'),
-            createFilterProps('allNominalCoverageVertical', 'Nominal Coverage Vertical', '', 'nominal_coverage_vertical'),
-            createFilterProps('allDirectivityFactor', 'Directivity Factor', '', 'directivity_factor'),
-            createFilterProps('allDirectivityIndex', 'Directivity Index', '', 'directivity_index'),
-            createFilterProps('allThroatDiameter', 'Throat Diameter', '', 'throat_diameter'),
-            createFilterProps('allMinimumRecommendedCrossover', 'Minimum Recommended Crossover', '', 'minimum_recommended_crossover'),
-            createFilterProps('allBaffleCutoutDimensionsHorizontal', 'Baffle Cutout Dimensions Horizontal', '', 'baffle_cutout_dimensions_front_mount_horizontal'),
-            createFilterProps('allBaffleCutoutDimensionsVertical', 'Baffle Cutout Dimensions Vertical', '', 'baffle_cutout_dimensions_front_mount_vertical'),
-            createFilterProps('allSensitivity', 'Sensitivity', '', 'sensitivity_on_driver'),
+            createFilterProps('allNominalCoverageHorizontal', 'Nominal Coverage Horizontal', '', 'nominalCoverageHorizontal'),
+            createFilterProps('allNominalCoverageVertical', 'Nominal Coverage Vertical', '', 'nominalCoverageVertical'),
+            createFilterProps('allDirectivityFactor', 'Directivity Factor', '', 'directivityFactor'),
+            createFilterProps('allDirectivityIndex', 'Directivity Index', '', 'directivityIndex'),
+            createFilterProps('allThroatDiameter', 'Throat Diameter', '', 'throatDiameter'),
+            createFilterProps('allMinimumRecommendedCrossover', 'Minimum Recommended Crossover', '', 'minimumRecommendedCrossover'),
+            createFilterProps('allBaffleCutoutDimensionsHorizontal', 'Baffle Cutout Dimensions Horizontal', '', 'baffleCutoutDimensionsHorizontal'),
+            createFilterProps('allBaffleCutoutDimensionsVertical', 'Baffle Cutout Dimensions Vertical', '', 'baffleCutoutDimensionsVertical'),
+            createFilterProps('allSensitivity', 'Sensitivity', '', 'sensitifityOnDriver'),
           )
 
           tempSliderLoop.map((value) =>{
@@ -134,7 +134,7 @@ export default function DriversBySubCategoryPageClient(props: Props) {
           })
 
           tempCheckboxLoop.push(
-            createFilterProps('allMechanicalConnectionofDriver', 'Mechanical Connection of Driver', '', 'mechanical_connection_of_driver'),
+            createFilterProps('allMechanicalConnectionofDriver', 'Mechanical Connection of Driver', '', 'mechanicalConnectionofDriver'),
           )
           tempCheckboxLoop.map((value) =>{
             //@ts-ignore
@@ -156,11 +156,14 @@ export default function DriversBySubCategoryPageClient(props: Props) {
         }
         else{
           tempSliderLoop.push(
+            createFilterProps('allImpedance', 'Impedance', '', 'nominal_impedance'),
+            createFilterProps('allMaxPower', 'Max Power', '', 'maximum_power_handling'),
             createFilterProps('allFS', 'FS', '', 'fs'),
+            createFilterProps('allSensitivity', 'Sensitivity', '', 'sensitivity'),
             createFilterProps('allQTS', 'QTS', '', 'qts'),
             createFilterProps('allXmax', 'X Max', '', 'x_max'),
             createFilterProps('allMms', 'Mms', '', 'mms'),
-            createFilterProps('allSensitivity', 'Sensitivity', '', 'sensitivity'),
+            createFilterProps('allVoiceCoilDiameter', 'Voice Coil Diameter', '', 'voice_coil_diameter'),
           )
 
           tempSliderLoop.map((value) =>{

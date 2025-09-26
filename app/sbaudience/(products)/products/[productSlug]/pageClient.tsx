@@ -5,14 +5,13 @@ import React, { useEffect, useState, use } from "react";
 import SingleProductTable from "@/components/single-product-page/single-product-table";
 import Link from "next/link";
 import SwiperCarouselOneProduct from "@/components/single-product-page/swipercarouseloneproduct";
-import { Custom_Specifications, Kits_Finishing, SimilarProdTypes, SingleProducts } from "@/app/types";
+import { Kits_Finishing, SimilarProdTypes, SingleProductsSBAudience } from "@/app/types";
 import CustomProductTable from "@/components/single-product-page/custom-product-table";
 import SwiperCarouselCoverandCatalogues from "@/components/single-product-page/swipercarouselcoverandcatalogues";
 import getSimilar from "@/app/actions/get-similar-products";
 import { redirect, usePathname } from "next/navigation";
 import DrawingSection from "@/components/single-product-page/drawingSection";
 import FrequencyResponseSection from "@/components/single-product-page/freqResSection";
-import getProduct from "@/app/actions/get-one-product";
 import getMultipleDatasheetProduct from "@/app/actions/get-one-multiple-datasheet";
 import getCustomProduct from "@/app/actions/get-one-custom-props";
 import getKitsFinishingProduct from "@/app/actions/get-one-kits-finishing-props";
@@ -31,22 +30,25 @@ import SwiperCarouselSimilarProduct from "@/components/single-product-page/swipe
 import getMultiplemodels3DProduct from "@/app/actions/get-one-multiple-3d-models";
 import getMultipleFRDZMA from "@/app/actions/get-one-multiple-frd-zma-files";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Custom_Specification } from "@prisma/client";
+import getProduct from "@/app/sbaudience/actions/get-one-product";
+import SpecificationSBAudienceTable from "@/app/sbaudience/components/single-product-table";
 
-const all_desc_style = "text-left xl:text-base sm:text-sm text-xs text-black p-0 py-1"
-const all_sub_title_style = "text-left font-bold xl:text-2xl lg:text-xl md:text-lg sm:text-md text-black"
+const all_desc_style = "text-left xl:text-base sm:text-sm text-xs text-foreground p-0 py-1"
+const all_sub_title_style = "text-left font-bold xl:text-2xl lg:text-xl md:text-lg sm:text-md text-foreground"
 
 type Props = {
   params: Promise<{ productSlug?: string }>
 }
 
 export default function SingleProductClient(props: Props) { 
-    const [data, setData] = useState<SingleProducts>();
+    const [data, setData] = useState<SingleProductsSBAudience>();
     const [desc, setDesc] = useState<string[]>([]);
     const [datasheetCatalogues, setdatasheetCatalogues] = useState<Kits_Finishing[]>([]); // same properties as datasheet
     const [models3D, setmodels3D] = useState<Kits_Finishing[]>([]);
     const [frdZmaFiles, setfrdZmaFiles] = useState<Kits_Finishing[]>([]);
     const [similarprod, setsimilarprod] = useState<SimilarProdTypes[]>([]);
-    const [customProps, setcustomProps] = useState<Custom_Specifications | null>(null);
+    const [customProps, setcustomProps] = useState<Custom_Specification | null>(null);
     const [kitsFinishing, setkitsFinishing] = useState<Kits_Finishing[] | null>(null);
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -58,7 +60,7 @@ export default function SingleProductClient(props: Props) {
             try {
                 const { productSlug = '' } = await props.params;
                 document.body.style.overflow = 'hidden';
-                let tempdata = await getProduct("", productSlug)
+                let tempdata = await getProduct("sbaudience", productSlug)
                 if(tempdata.id === '' && tempdata.slug === ''){
                     redirect('/notfound')
                 }
@@ -67,18 +69,18 @@ export default function SingleProductClient(props: Props) {
                 let temp3dmodels = await getMultiplemodels3DProduct(pathname, productSlug) ?? []
                 let tempfrdzmafiles = await getMultipleFRDZMA(pathname, productSlug) ?? []
                 let tempsimilarprod = await getSimilar(pathname, productSlug)
-                let tempcustomProps: Custom_Specifications | null = null;
+                let tempcustomProps: Custom_Specification | null = null;
                 let tempkitsFinishing: Kits_Finishing[] | null = null;
                 // let datasheetCatalogues: Kits_Finishing[] | null = null;
-                if (tempdata.isCustom) {
-                    tempcustomProps = await getCustomProduct(pathname, productSlug);
-                    const tempValue = process.env.NEXT_PUBLIC_ROOT_URL || '';
-                    tempcustomProps!.customDesc = tempcustomProps!.customDesc.replace(/{temp}/g, `${tempValue}/`);
-                    if(tempdata.isKits){
-                        tempkitsFinishing = await getKitsFinishingProduct(pathname, productSlug)
-                    }
-                    // datasheetCatalogues = await getMultipleDatasheet(params.productSlug)
-                }
+                // if (tempdata.isCustom) {
+                //     tempcustomProps = await getCustomProduct(pathname, productSlug);
+                //     const tempValue = process.env.NEXT_PUBLIC_ROOT_URL || '';
+                //     tempcustomProps!.customDesc = tempcustomProps!.customDesc.replace(/{temp}/g, `${tempValue}/`);
+                //     if(tempdata.isKits){
+                //         tempkitsFinishing = await getKitsFinishingProduct(pathname, productSlug)
+                //     }
+                //     // datasheetCatalogues = await getMultipleDatasheet(params.productSlug)
+                // }
                 setData(tempdata)
                 setDesc(tempdesc)
                 setdatasheetCatalogues(tempdatasheetCatalogues)
@@ -231,227 +233,7 @@ export default function SingleProductClient(props: Props) {
                         </div>
 
 
-                        {/* OEM QUANTITY */}
-                        {data.oemQuantity!='' && 
-                        <div className={`${all_desc_style} font-bold flex items-center text-primary pt-8`}>
-                            To be discontinued from standard product range, available to OEM minimum order quantity {data.oemQuantity} pcs.    
-                        </div>}
-
                         {data.isCustom?
-                            data.isKits? 
-                            <>           
-                                {customProps && customProps.customDesc!='' &&       
-                                <>              
-                                    <div className={`${all_sub_title_style} pt-8`}>
-                                        <h2>Descriptions:</h2>
-                                    </div>
-                                    <h3 className={`${all_desc_style} desc-content`} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(customProps.customDesc, {
-                                        ALLOWED_TAGS: [
-                                            'a', 'b', 'i', 'u', 'em', 'strong', 'p', 'div', 'span', 'ul', 'ol', 'li', 'br'
-                                        ],
-                                        ALLOWED_ATTR: [
-                                            'href', 'target', 'rel', 'class', 'id', 'style'
-                                        ],
-                                    }) }}>
-                                    </h3>
-                                </>
-                                }
-
-
-                                <h2 className="sr-only">Datasheet:</h2>
-                                {datasheetCatalogues && datasheetCatalogues.length===1 && datasheetCatalogues[0].url!=''?
-                                    <div className="flex justify-start pt-8">
-                                        <Link href={datasheetCatalogues[0].url} target="_blank" className={`${all_desc_style} font-bold flex items-center hover:text-primary`}>
-                                        <div className="pr-2">
-                                            {/* <Download strokeWidth={3} size={15} className="text-white"/> */}
-                                            <Image src={'/images/sbacoustics/PDF-download.webp'} alt="PDF Download" className="max-h-8 w-fit" width={100} height={100}/>
-                                            </div>
-                                            <h3 className="pl-2">
-                                                {datasheetCatalogues[0].name}
-                                            </h3>
-                                        </Link>
-                                    </div>
-                                :
-                                datasheetCatalogues[0].url!='' &&
-                                <div className="justify-start pt-8">
-                                        {datasheetCatalogues && datasheetCatalogues.map((value, index) => (
-                                            value.url!='' &&
-                                                <div key={index}  className={`${index !== 0 && 'pt-4'}`}>
-                                                    <Link href={value.url} target="_blank" className={`${all_desc_style} font-bold flex items-center hover:text-primary`}> 
-                                                            <div className="pr-2">
-                                                            {/* <Download strokeWidth={3} size={15} className="text-white"/> */}
-                                                            <Image src={'/images/sbacoustics/PDF-download.webp'} alt="PDF Download" className="max-h-8 w-fit" width={100} height={100}/>
-                                                        </div>
-                                                        <h3 className="pl-2">
-                                                            {datasheetCatalogues[index].name}
-                                                        </h3>
-                                                    </Link>
-                                                </div>
-                                        ))}
-                                </div>                
-                                }
-
-
-                                <h2 className="sr-only">FRD & ZMA Files:</h2>
-                                {frdZmaFiles && frdZmaFiles.length===1 && frdZmaFiles[0].url!=''?
-                                    <div className="flex justify-start pt-4">
-                                        <Link href={frdZmaFiles[0].url} target="_blank" className={`${all_desc_style} font-bold flex items-center hover:text-primary`}>
-                                        <div className="pr-2">
-                                            {/* <Download strokeWidth={3} size={15} className="text-white"/> */}
-                                            <Image src={'/images/sbacoustics/FRD-ZMA-download.webp'} alt="FRD ZMA Files Download" className="max-h-8 w-fit" width={100} height={100}/>
-                                            </div>
-                                            <h3 className="pl-2">
-                                                {frdZmaFiles[0].name}
-                                            </h3>
-                                        </Link>
-                                    </div>
-                                :
-                                frdZmaFiles[0].url!='' &&
-                                <div className="justify-start pt-4">
-                                        {frdZmaFiles && frdZmaFiles.map((value, index) => (
-                                            value.url!='' &&
-                                                <div key={index}  className={`${index !== 0 && 'pt-4'}`}>
-                                                    <Link href={value.url} target="_blank" className={`${all_desc_style} font-bold flex items-center hover:text-primary`}> 
-                                                            <div className="pr-2">
-                                                            {/* <Download strokeWidth={3} size={15} className="text-white"/> */}
-                                                            <Image src={'/images/sbacoustics/FRD-ZMA-download.webp'} alt="FRD ZMA Files Download" className="max-h-8 w-fit" width={100} height={100}/>
-                                                        </div>
-                                                        <h3 className="pl-2">
-                                                            {frdZmaFiles[index].name}
-                                                        </h3>
-                                                    </Link>
-                                                </div>
-                                        ))}
-                                </div>                
-                                }
-
-
-                                <h2 className="sr-only">3D Models Files:</h2>
-                                {models3D && models3D.length===1 && models3D[0].url!=''?
-                                    <div className="flex justify-start pt-4">
-                                        <Link href={models3D[0].url} target="_blank" className={`${all_desc_style} font-bold flex items-center hover:text-primary`}>
-                                        <div className="pr-2">
-                                            {/* <Download strokeWidth={3} size={15} className="text-white"/> */}
-                                            <Image src={'/images/sbacoustics/3D-download.webp'} alt="3D Models Download" className="max-h-8 w-fit" width={100} height={100}/>
-                                            </div>
-                                            <h3 className="pl-2">
-                                                {models3D[0].name}
-                                            </h3>
-                                        </Link>
-                                    </div>
-                                :
-                                models3D[0].url!='' &&
-                                <div className="justify-start pt-4">
-                                        {models3D && models3D.map((value, index) => (
-                                            value.url!='' &&
-                                                <div key={index}  className={`${index !== 0 && 'pt-4'}`}>
-                                                    <Link href={value.url} target="_blank" className={`${all_desc_style} font-bold flex items-center hover:text-primary`}> 
-                                                            <div className="pr-2">
-                                                            {/* <Download strokeWidth={3} size={15} className="text-white"/> */}
-                                                            <Image src={'/images/sbacoustics/3D-download.webp'} alt="3D Models Download" className="max-h-8 w-fit" width={100} height={100}/>
-                                                        </div>
-                                                        <h3 className="pl-2">
-                                                            {models3D[index].name}
-                                                        </h3>
-                                                    </Link>
-                                                </div>
-                                        ))}
-                                </div>                
-                                }
-
-
-
-
-
-                                {/* <div className="flex justify-start pt-4">
-                                    <Link href={datasheetCatalogues[0].url} target="_blank" className={`${all_desc_style} font-bold flex items-center hover:text-primary`}>
-                                        <div className="pr-2">
-                                            <Image src={'/images/sbacoustics/FRD-ZMA-download.webp'} alt="FRD ZMA Download" className="max-h-8 w-fit" width={100} height={100}/>
-                                        </div>
-                                        <h3 className="pl-2">
-                                            FRD & ZMA Files
-                                        </h3>
-                                    </Link>
-                                </div>
-                               <div className="flex justify-start pt-4">
-                                    <Link href={datasheetCatalogues[0].url} target="_blank" className={`${all_desc_style} font-bold flex items-center hover:text-primary`}>
-                                        <div className="pr-2">
-                                            <Image src={'/images/sbacoustics/3D-download.webp'} alt="3D Download" className="max-h-8 w-fit" width={100} height={100}/>
-                                        </div>
-                                        <h3 className="pl-2">
-                                            3D Files
-                                        </h3>
-                                    </Link>
-                                </div> */}
-
-
-                                
-                                
-                                {!data.isAccessories && customProps && 
-                                    (customProps.air_gap_height != '' ||
-                                    customProps.cabinet_material != '' ||
-                                    customProps.crossover_frequency != '' ||
-                                    customProps.customDesc != '' ||
-                                    customProps.custom_note_for_spec != '' ||
-                                    customProps.dc_resistance_re != '' ||
-                                    customProps.dome_material != '' ||
-                                    customProps.driver_units != '' ||
-                                    customProps.enclosure_type != '' ||
-                                    customProps.free_air_resonance_fs != '' ||
-                                    customProps.frequency_range != '' ||
-                                    customProps.magnet_weight != '' ||
-                                    customProps.magnetic_flux_density != '' ||
-                                    customProps.max_spl != '' ||
-                                    customProps.net_weight != '' ||
-                                    customProps.nominal_impedance != '' ||
-                                    customProps.port_tuning_frequency != '' ||
-                                    customProps.rated_power_handling != '' ||
-                                    customProps.recommended_amplifier != '' ||
-                                    customProps.sensitivity != '' ||
-                                    customProps.speaker_dimension != '' ||
-                                    customProps.voice_coil_diameter != '' ||
-                                    customProps.voice_coil_height != '') &&
-                                        <>
-                                            <h2 className={`${all_sub_title_style} pt-8`}>
-                                                Specs:
-                                            </h2>
-                                            <div className="md:w-3/4 w-full">
-                                                {CustomProductTable(customProps!, all_desc_style)}
-                                            </div>
-                                        </>
-                                }
-
-                                {kitsFinishing?
-                                    kitsFinishing[0].name!=""?
-                                    <div className="flex justify-center pt-8">
-                                    <Accordion type="single" collapsible className="w-full">
-                                        <AccordionItem value="item-1">
-                                            <AccordionTrigger className="w-full">
-                                                <h2 className={all_sub_title_style}>
-                                                    Finishing
-                                                </h2>
-                                            </AccordionTrigger>
-                                            <div className="grid grid-cols-3">
-                                            {kitsFinishing!.map((value, index) => (
-                                                <AccordionContent key={index} className={`pr-4`}>
-                                                    <Image src={value.url.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_ROOT_URL}${value.url}` : value.url} alt={value.name} width={250} height={250}/>
-                                                    <h3 className={`${all_desc_style} text-center font-bold`}>
-                                                        {value.name}
-                                                    </h3>
-                                                </AccordionContent>
-                                            ))}
-                                            </div>
-                                        </AccordionItem>
-                                    </Accordion>
-                                </div>
-                                : 
-                                <></>                                
-                                : 
-                                <></>
-                                }
-                                
-                            </>
-                            :
                             <>
                                 {desc[0] !== '-' &&
                                     <>
@@ -542,44 +324,55 @@ export default function SingleProductClient(props: Props) {
                                 
                                 <div className="col-span-2 lg:flex md:hidden flex">
                                     {data.specification &&
-                                        (data.specification.air_gap_height != '' ||
-                                        data.specification.coil_inductance_le != '' ||
-                                        data.specification.compliance_cms != '' ||
-                                        data.specification.cone_material != '' ||
-                                        data.specification.custom_note != '' ||
-                                        data.specification.dc_resistance_re != '' ||
-                                        data.specification.dome_material != '' ||
-                                        data.specification.effective_piston_area_sd != '' ||
-                                        data.specification.electrical_q_factor_qes != '' ||
-                                        data.specification.equivalent_volume_vas != '' ||
-                                        data.specification.force_factor_bi != '' ||
-                                        data.specification.free_air_resonance_fs != '' ||
-                                        data.specification.impedance != '' ||
-                                        data.specification.linear_coil_travel_pp != '' ||
-                                        data.specification.magnet_weight != '' ||
-                                        data.specification.magnetic_flux_density != '' ||
-                                        data.specification.max_mechanical_cone_excursion_xmech != '' ||
-                                        data.specification.mechanical_loss_rms != '' ||
-                                        data.specification.mechanical_q_factor_qms != '' ||
-                                        data.specification.mounting_diameter != '' ||
-                                        data.specification.moving_mass_mms != '' ||
-                                        data.specification.net_weight != '' ||
-                                        data.specification.rated_power_handling != '' ||
-                                        data.specification.recommended_frequency_range != '' ||
+                                        (data.specification.nominal_impedance != '' ||
+                                        data.specification.minimum_impedance != '' ||
+                                        data.specification.aes_power_handling != '' ||
+                                        data.specification.maximum_power_handling != '' ||
                                         data.specification.sensitivity != '' ||
-                                        data.specification.total_q_factor_qts != '' ||
+                                        data.specification.frequency_range != '' ||
                                         data.specification.voice_coil_diameter != '' ||
-                                        data.specification.voice_coil_height != '') &&
+                                        data.specification.winding_material != '' ||
+                                        data.specification.former_material != '' ||
+                                        data.specification.winding_depth != '' ||
+                                        data.specification.magnetic_gap_depth != '' ||
+                                        data.specification.flux_density != '' ||
+                                        data.specification.magnet != '' ||
+                                        data.specification.basket_material != '' ||
+                                        data.specification.demodulation != '' ||
+                                        data.specification.cone_surround != '' ||
+                                        data.specification.net_air_volume_filled_by_driver != '' ||
+                                        data.specification.spider_profile != '' ||
+                                        data.specification.weather_resistant != '' ||
+                                        data.specification.rdc != '' ||
+                                        data.specification.recommended_crossover_frequency != '' ||
+                                        data.specification.diaphragm_material != '' ||
+                                        data.specification.phase_plug_design != '' ||
+                                        data.specification.total_exit_angle != '' ||
+                                        data.specification.net_air_volume_filled_by_hf_driver != '' ||
+                                        data.specification.nominal_throat_diameter != '' ||
+                                        data.specification.overall_diameter != '' ||
+                                        data.specification.ninety_degrees_mounting_holes_diameter != ''||
+                                        data.specification.depth != '' ||
+                                        data.specification.net_weight != '' ||
+                                        data.specification.shipping_box != '' ||
+                                        data.specification.gross_weight != '' ||
+                                        data.specification.replacement_diaphragm != '' ||
+                                        data.specification.bolt_circle_diameter != '' ||
+                                        data.specification.baffle_cutout_diameter != '' ||
+                                        data.specification.mounting_depth != '' ||
+                                        data.specification.flange_and_gasket_thickness != '' ||
+                                        data.specification.recone_kit != '' ||
+                                        data.specification.custom_note != '') &&
                                             <div className="w-1/2">
                                                 <h2 className={`${all_sub_title_style} pt-8 pr-5`}>
-                                                    Specs Woofer:
+                                                    Specs:
                                                 </h2>
                                                 <div className="pr-5">
-                                                    {SingleProductTable(data.specification, all_desc_style)}
+                                                    {SpecificationSBAudienceTable(data.specification, all_desc_style)}
                                                 </div>
                                             </div>
                                     }
-                                    {customProps &&
+                                    {/* {customProps &&
                                         (customProps.air_gap_height != '' ||
                                         customProps.cabinet_material != '' ||
                                         customProps.crossover_frequency != '' ||
@@ -611,7 +404,7 @@ export default function SingleProductClient(props: Props) {
                                                 {CustomProductTable(customProps, all_desc_style)}
                                             </div>
                                         </div>
-                                    }
+                                    } */}
                                 </div>
                             </>
                         : 
@@ -761,43 +554,54 @@ export default function SingleProductClient(props: Props) {
                                     </Link>
                                 </div> */}
 
-                            {data && 
-                                (data.specification.air_gap_height != '' ||
-                                data.specification.coil_inductance_le != '' ||
-                                data.specification.compliance_cms != '' ||
-                                data.specification.cone_material != '' ||
-                                data.specification.custom_note != '' ||
-                                data.specification.dc_resistance_re != '' ||
-                                data.specification.dome_material != '' ||
-                                data.specification.effective_piston_area_sd != '' ||
-                                data.specification.electrical_q_factor_qes != '' ||
-                                data.specification.equivalent_volume_vas != '' ||
-                                data.specification.force_factor_bi != '' ||
-                                data.specification.free_air_resonance_fs != '' ||
-                                data.specification.impedance != '' ||
-                                data.specification.linear_coil_travel_pp != '' ||
-                                data.specification.magnet_weight != '' ||
-                                data.specification.magnetic_flux_density != '' ||
-                                data.specification.max_mechanical_cone_excursion_xmech != '' ||
-                                data.specification.mechanical_loss_rms != '' ||
-                                data.specification.mechanical_q_factor_qms != '' ||
-                                data.specification.mounting_diameter != '' ||
-                                data.specification.moving_mass_mms != '' ||
-                                data.specification.net_weight != '' ||
-                                data.specification.rated_power_handling != '' ||
-                                data.specification.recommended_frequency_range != '' ||
-                                data.specification.sensitivity != '' ||
-                                data.specification.total_q_factor_qts != '' ||
-                                data.specification.voice_coil_diameter != '' ||
-                                data.specification.voice_coil_height != '') &&
-                                    <>
-                                        <h2 className={`${all_sub_title_style} pt-8`}>
+                                {data.specification &&
+                                    (data.specification.nominal_impedance != '' ||
+                                    data.specification.minimum_impedance != '' ||
+                                    data.specification.aes_power_handling != '' ||
+                                    data.specification.maximum_power_handling != '' ||
+                                    data.specification.sensitivity != '' ||
+                                    data.specification.frequency_range != '' ||
+                                    data.specification.voice_coil_diameter != '' ||
+                                    data.specification.winding_material != '' ||
+                                    data.specification.former_material != '' ||
+                                    data.specification.winding_depth != '' ||
+                                    data.specification.magnetic_gap_depth != '' ||
+                                    data.specification.flux_density != '' ||
+                                    data.specification.magnet != '' ||
+                                    data.specification.basket_material != '' ||
+                                    data.specification.demodulation != '' ||
+                                    data.specification.cone_surround != '' ||
+                                    data.specification.net_air_volume_filled_by_driver != '' ||
+                                    data.specification.spider_profile != '' ||
+                                    data.specification.weather_resistant != '' ||
+                                    data.specification.rdc != '' ||
+                                    data.specification.recommended_crossover_frequency != '' ||
+                                    data.specification.diaphragm_material != '' ||
+                                    data.specification.phase_plug_design != '' ||
+                                    data.specification.total_exit_angle != '' ||
+                                    data.specification.net_air_volume_filled_by_hf_driver != '' ||
+                                    data.specification.nominal_throat_diameter != '' ||
+                                    data.specification.overall_diameter != '' ||
+                                    data.specification.ninety_degrees_mounting_holes_diameter != ''||
+                                    data.specification.depth != '' ||
+                                    data.specification.net_weight != '' ||
+                                    data.specification.shipping_box != '' ||
+                                    data.specification.gross_weight != '' ||
+                                    data.specification.replacement_diaphragm != '' ||
+                                    data.specification.bolt_circle_diameter != '' ||
+                                    data.specification.baffle_cutout_diameter != '' ||
+                                    data.specification.mounting_depth != '' ||
+                                    data.specification.flange_and_gasket_thickness != '' ||
+                                    data.specification.recone_kit != '' ||
+                                    data.specification.custom_note != '') &&
+                                    <div className="w-1/2">
+                                        <h2 className={`${all_sub_title_style} pt-8 pr-5`}>
                                             Specs:
                                         </h2>
-                                        <div className="md:w-3/4 w-full">
-                                            {SingleProductTable(data.specification, all_desc_style)}
+                                        <div className="pr-5">
+                                            {SpecificationSBAudienceTable(data.specification, all_desc_style)}
                                         </div>
-                                    </>
+                                    </div>
                                 }
                             </>
                         }
@@ -806,7 +610,7 @@ export default function SingleProductClient(props: Props) {
                 </div>
             </div>}
 
-            {data?.isCustom && !data.isKits &&
+            {/* {data?.isCustom && !data.isKits &&
                 <div className=" col-span-2 lg:hidden md:flex hidden">
                     {data.specification &&
                         (data.specification.air_gap_height != '' ||
@@ -880,7 +684,7 @@ export default function SingleProductClient(props: Props) {
                             </div>
                     }
                 </div>
-            }
+            } */}
             {similarprod.length!=0?
                 <div className={`${all_sub_title_style} pt-28 justify-center items-center text-center w-full`}>
                     <h2 className="pb-4">

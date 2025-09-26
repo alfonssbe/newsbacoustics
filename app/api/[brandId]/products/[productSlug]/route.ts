@@ -22,6 +22,8 @@ export async function GET(req: Request, props: { params: Promise<{ brandId: stri
           cover_img: true,
           size: true,
           specificationSBAudience: true,
+          hornsspecificationSBAudience: true,
+          thieleSmallParametersSBAudience: true,
         }
       });
       return NextResponse.json(product);

@@ -409,8 +409,8 @@ const AllDriversProducts: React.FC<MainProps> = ({
                                                 <div className="absolute flex items-center justify-center z-[-1] w-10 h-10">
                                                     <Loader2 className="animate-spin text-gray-500" size={20} />
                                                 </div>
-                                                <Image src={activeImgUrlCompare[index].startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_ROOT_URL}${activeImgUrlCompare[index]}` : activeImgUrlCompare[index] } alt={activeNameCompare[index]} width={150} height={150} />
-                                                <div className="text-black text-base font-bold mt-4">
+                                                <Image src={activeImgUrlCompare[index].startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_ROOT_URL}${activeImgUrlCompare[index]}` : activeImgUrlCompare[index] } alt={activeNameCompare[index]} width={150} height={50} className="h-52 w-fit" />
+                                                <div className="text-foreground text-base font-bold mt-4">
                                                     {activeNameCompare[index]}
                                                 </div>
                                             </div>
@@ -446,7 +446,7 @@ const AllDriversProducts: React.FC<MainProps> = ({
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                            <BreadcrumbLink href="/sbaudience">Home</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             {finalBreadcrumb.map((value, index) => {
@@ -458,13 +458,7 @@ const AllDriversProducts: React.FC<MainProps> = ({
                                     if (value === 'drivers') {
                                         breadcrumbItem = (
                                             <BreadcrumbItem key={index}>
-                                                <BreadcrumbLink href={`/drivers`}>Drivers</BreadcrumbLink>
-                                            </BreadcrumbItem>
-                                        );
-                                    } else if (value === 'kits') {
-                                        breadcrumbItem = (
-                                            <BreadcrumbItem key={index}>
-                                                <BreadcrumbLink href={`/kits`}>Kits</BreadcrumbLink>
+                                                <BreadcrumbLink href={`/sbaudience/drivers`}>Drivers</BreadcrumbLink>
                                             </BreadcrumbItem>
                                         );
                                     }
@@ -477,7 +471,7 @@ const AllDriversProducts: React.FC<MainProps> = ({
                                 } else {
                                     breadcrumbItem = (
                                         <BreadcrumbItem key={index}>
-                                            <BreadcrumbLink href={`/drivers/${params[index]}`}>{value}</BreadcrumbLink>
+                                            <BreadcrumbLink href={`/sbaudience/drivers/${params[index]}`}>{value}</BreadcrumbLink>
                                         </BreadcrumbItem>
                                     );
                                 }

@@ -149,6 +149,18 @@ const getAllProductsBySubCategory = async (path: string, subcategory: string): P
         if(data[i].specificationSBAudience && data[i].specificationSBAudience.sensitivity!=null){
           allSensitivity.push(Number(data[i].specificationSBAudience.sensitivity))
         }
+        // Impedance
+        if(data[i].specificationSBAudience && data[i].specificationSBAudience.nominal_impedance!=null){
+          allImpedance.push(Number(data[i].specificationSBAudience.nominal_impedance))
+        }
+        // Max Power
+        if(data[i].specificationSBAudience && data[i].specificationSBAudience.maximum_power_handling!=null){
+          allMaxPower.push(Number(data[i].specificationSBAudience.maximum_power_handling))
+        }
+        // VC Diameter
+        if(data[i].specificationSBAudience && data[i].specificationSBAudience.voice_coil_diameter!=null){
+          allVoiceCoilDiameter.push(Number(data[i].specificationSBAudience.voice_coil_diameter))
+        }
       }
   
       let specific: SpecificationSBAudience = {
@@ -200,7 +212,7 @@ const getAllProductsBySubCategory = async (path: string, subcategory: string): P
       ...specific,
       fs: data[i].thieleSmallParametersSBAudience?.fs ?? "",
       qts: data[i].thieleSmallParametersSBAudience?.qts ?? "",
-      xmax: data[i].thieleSmallParametersSBAudience?.x_max ?? "",
+      x_max: data[i].thieleSmallParametersSBAudience?.x_max ?? "",
       mms: data[i].thieleSmallParametersSBAudience?.mms ?? "",
       nominalCoverageHorizontal: data[i].hornsspecificationSBAudience?.nominal_coverage_horizontal ?? "",
       nominalCoverageVertical: data[i].hornsspecificationSBAudience?.nominal_coverage_vertical ?? "",
@@ -211,6 +223,7 @@ const getAllProductsBySubCategory = async (path: string, subcategory: string): P
       mechanicalConnectionofDriver: data[i].hornsspecificationSBAudience?.mechanical_connection_of_driver ?? "",
       baffleCutoutDimensionsHorizontal: data[i].hornsspecificationSBAudience?.baffle_cutout_dimensions_front_mount_horizontal ?? "",
       baffleCutoutDimensionsVertical: data[i].hornsspecificationSBAudience?.baffle_cutout_dimensions_front_mount_vertical ?? "",
+      sensitifityOnDriver: data[i].hornsspecificationSBAudience?.sensitivity_on_driver ?? "",
     }
       let product: ProductsSBAudience = {
         id: data[i].id,

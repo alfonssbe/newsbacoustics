@@ -195,10 +195,10 @@ export async function GET(req: Request, props: { params: Promise<{ brandId: stri
           size.push(product.size.name.concat(" inch"))
           size.push(product.size.value)
         }
-        if (product.specificationSBAudience.maximum_power_handling && product.specificationSBAudience.maximum_power_handling !== '') {
+        if (product.specificationSBAudience && product.specificationSBAudience.maximum_power_handling && product.specificationSBAudience.maximum_power_handling !== '') {
           parts.push(product.specificationSBAudience.maximum_power_handling + " W");
         }
-        if (product.specificationSBAudience.sensitivity && product.specificationSBAudience.sensitivity !== '') {
+        if (product.specificationSBAudience && product.specificationSBAudience.sensitivity && product.specificationSBAudience.sensitivity !== '') {
           parts.push(product.specificationSBAudience.sensitivity + " dB");
         }      
         add_info = parts.join(" - ");

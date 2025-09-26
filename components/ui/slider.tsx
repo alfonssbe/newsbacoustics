@@ -64,16 +64,16 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
         value={currentIndices}
         onValueChange={onValueChange}
       >
-        <SliderPrimitive.Track className="relative h-[2px] w-full grow overflow-hidden rounded-full bg-slate-300">
-          <SliderPrimitive.Range className="absolute h-full bg-black" />
+        <SliderPrimitive.Track className="relative h-[2px] w-full grow overflow-hidden rounded-full bg-foreground/30">
+          <SliderPrimitive.Range className="absolute h-full bg-foreground" />
         </SliderPrimitive.Track>
           {currentIndices.map((_, index) => (
           <React.Fragment key={index}>
-            <SliderPrimitive.Thumb className="block h-3 w-3 rounded-full first-letter:bg-background bg-white border-2 border-primary ring-offset-background transition-colors disabled:pointer-events-none disabled:opacity-50 hover:shadow-lg hover:cursor-pointer" />
+            <SliderPrimitive.Thumb className="block h-3 w-3 rounded-full first-letter:bg-background bg-background border-2 border-primary ring-offset-background transition-colors disabled:pointer-events-none disabled:opacity-50 hover:shadow-lg hover:cursor-pointer" />
           </React.Fragment>
         ))}
       </SliderPrimitive.Root>
-      <div className="w-full text-center text-sm">{unit === '"' ? <>{minVal}{unit} - {maxVal}{unit}</> : <>{minVal} {unit} - {maxVal} {unit}</>}</div>
+      <div className="w-full text-center text-foreground text-sm">{unit === '"' ? <>{minVal}{unit} - {maxVal}{unit}</> : <>{minVal} {unit} - {maxVal} {unit}</>}</div>
     </>
   );
 });

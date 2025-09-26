@@ -87,7 +87,7 @@ export async function POST(
         brandId: params.brandId
       },
       data: {
-        specId: hornsspecification.id,
+        hornsspecSBAudienceId: hornsspecification.id,
         updatedBy: session.name,
         updatedAt: new Date()
       }

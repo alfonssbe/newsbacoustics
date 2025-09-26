@@ -197,15 +197,15 @@ const AllDriversandFiltersProducts: React.FC<MainProps> = ({
                 !loadingSlider && Array.isArray(sliderValue) &&
                 <div key={'1'} className="hidden md:block pr-4">
                     {/* <div className="pt-28"></div> */}
-                    <div className="sticky top-24 rounded-md text-black shadow-2xl bg-zinc-100">
-                    <div className="text-lg lg:text-xl font-bold text-center bg-zinc-700 text-white py-2 rounded-t-md">
+                    <div className="sticky top-24 rounded-lg text-black shadow-2xl bg-zinc-100 shadow-foreground/10">
+                    <div className="text-lg lg:text-xl font-bold text-center bg-zinc-800 text-foreground py-2 rounded-t-md">
                         FILTERS
                     </div>
-                    <div className="p-4 overflow-auto max-h-[calc(100vh-10.5rem)]">
+                    <div className="p-4 overflow-auto max-h-[calc(100vh-10.5rem)] bg-zinc-700 scrollbar-thin scrollbar-thumb-background/30 scrollbar-track-zinc-700 rounded-b-md">
                         {checkbox.map((valueCheckbox, index) =>
                         valueCheckbox.value.length > 1 && (
                             <div key={index} className="grid gap-2 w-full max-w-80 pt-2">
-                            <div className="text-center font-bold text-sm">{valueCheckbox.name}</div>
+                            <div className="text-center font-bold text-sm text-foreground">{valueCheckbox.name}</div>
                             {valueCheckbox.value.map((choicesVal, indexChoices) => (
                              <div key={indexChoices} className="flex items-center">
                              <div className="pr-2 py-1 flex items-center h-full">
@@ -222,7 +222,7 @@ const AllDriversandFiltersProducts: React.FC<MainProps> = ({
                                  }
                                />
                              </div>
-                             <label htmlFor={choicesVal} className="text-start text-sm">
+                             <label htmlFor={choicesVal} className="text-start text-sm text-foreground">
                                {choicesVal} {valueCheckbox.unit}
                              </label>
                            </div>
@@ -235,7 +235,7 @@ const AllDriversandFiltersProducts: React.FC<MainProps> = ({
                         {sliderValue.map((sliderValue1, index)=> 
                             sliderValue1.value.length > 1 &&
                             <div key={index} className="grid gap-2 w-full max-w-80 pt-2">
-                                <div className="text-center font-bold text-sm">
+                                <div className="text-center font-bold text-sm text-foreground">
                                     {sliderValue1.name}
                                 </div>
                                 <Slider

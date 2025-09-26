@@ -3,7 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import { ProductsSBAudience } from "@/app/types";
-import { LazyImageClickable } from "@/components/lazyImageclickable";
 import { LazyImageClickableSBAudience } from "../../components/lazyImageclickablesbaudience";
 
 interface ReviewCard {
@@ -16,7 +15,7 @@ const ProductCard: React.FC<ReviewCard> = React.memo(
     return (
       <Link
         href={{
-          pathname: `/products/${data?.slug}`,
+          pathname: `/sbaudience/products/${data?.slug}`,
         }}
         className="bg-white group cursor-pointer"
       >  

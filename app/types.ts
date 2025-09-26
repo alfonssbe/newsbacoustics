@@ -264,7 +264,7 @@ export type ProductsSBAudience = BaseProduct<
   SpecificationSBAudience & {
     fs: number;
     qts: number;
-    xmax: number;
+    x_max: number;
     mms: number;
     nominalCoverageHorizontal: number;
     nominalCoverageVertical: number;
@@ -275,6 +275,7 @@ export type ProductsSBAudience = BaseProduct<
     mechanicalConnectionofDriver: string;
     baffleCutoutDimensionsHorizontal: number;
     baffleCutoutDimensionsVertical: number;
+    sensitifityOnDriver: number;
   }
 >;
 

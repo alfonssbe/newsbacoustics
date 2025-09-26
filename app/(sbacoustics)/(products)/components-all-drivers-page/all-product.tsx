@@ -1,7 +1,7 @@
 "use client";
 
 import NoResults from "@/components/ui/no-results";
-import ProductCard from "@/app/(sbacoustics)/(products)/all-drivers-page/product-card";
+
 import { activeCheckbox, activeSlider, PriorityMenu, Products } from "@/app/types";
 import React, { useEffect, useRef, useState } from "react";
 import AllActiveFilters from "./all-active-filters";
@@ -26,6 +26,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/scrollbar';
 import { Navigation, Thumbs, Scrollbar } from 'swiper/modules';
 import getAllPriorityBySubCategory from "@/app/actions/get-all-priority-by-category";
+import ProductCard from "./product-card";
 
 
 interface MainProps {
@@ -136,7 +137,7 @@ const AllDriversProducts: React.FC<MainProps> = ({
                     if (indexslider === 0) {
                         products.forEach((product) => {
                             let productValue = 0
-                            if(slider.slug==='size'){
+                            if(slider.slug==='size' && product.size){
                                 productValue = Number(product.size.value)
                             }
                             else{
@@ -153,7 +154,7 @@ const AllDriversProducts: React.FC<MainProps> = ({
                     } else {
                         tempShowed[indexslider - 1].forEach((product) => {
                             let productValue = 0
-                            if(slider.slug==='size'){
+                            if(slider.slug==='size' && product.size){
                                 productValue = Number(product.size.value)
                             }
                             else{

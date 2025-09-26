@@ -1,4 +1,4 @@
-import getProduct from "@/app/actions/get-one-product";
+import getProduct from "@/app/sbaudience/actions/get-one-product";
 import SingleProductClient from "./pageClient";
 
 type Props = {
@@ -23,23 +23,23 @@ export const revalidate = 86400
 export default async function SingleProductJsonLd(props: Props) {
     const { productSlug = '' } = await props.params;
     const baseUrl = process.env.NEXT_PUBLIC_ROOT_URL ?? 'http://localhost:3000';
-    const data = await getProduct("", productSlug); // SSR fetch
+    const data = await getProduct("sbaudience", productSlug); // SSR fetch
 
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "Product",
         "name": data?.name,
-        "description": `Found out more about ${data?.name} from SB Acoustics!`,
+        "description": `Found out more about ${data?.name} from SB Audience!`,
         "image": data?.coverUrl ? `${baseUrl}${data.coverUrl}` : '',
         "sku": data?.slug || data?.id,
         "brand": {
           "@type": "Brand",
-          "name": "SB Acoustics"
+          "name": "SB Audience"
         },
-        "url": data?.slug ? `${baseUrl}/products/${data.slug}` : `${baseUrl}`,
+        "url": data?.slug ? `${baseUrl}/sbaudience/products/${data.slug}` : `${baseUrl}/sbaudience`,
         "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": `${baseUrl}`
+          "@id": `${baseUrl}/sbaudience`
         }
     };
 

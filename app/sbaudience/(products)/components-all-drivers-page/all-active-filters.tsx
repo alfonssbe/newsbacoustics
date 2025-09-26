@@ -21,14 +21,14 @@ const AllActiveFilters: React.FC<MainProps> = ({ slider = [], checkbox = [] }) =
         <h3 className="text-sm font-bold">Active Filters</h3>
       </div>
 
-      <div className="bg-zinc-100 border border-gray-200 rounded-lg p-3 overflow-x-auto">
+      <div className="bg-zinc-700 border border-none rounded-lg p-3 overflow-x-auto">
         <div className="flex gap-2 min-w-fit">
           {slider.map((oneslider, index) => (
             <div
               key={index}
               className="bg-white border border-gray-200 rounded-md px-3 py-1.5 text-sm whitespace-nowrap shadow-sm"
             >
-              <span className="font-bold text-gray-600">{oneslider.parentName}:</span>
+              <span className="font-bold text-background">{oneslider.parentName}:</span>
               <span className="ml-1 text-gray-800">
                 {oneslider.bottomRealVal} {oneslider.unit} - {oneslider.topRealVal} {oneslider.unit}
               </span>
