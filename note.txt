@@ -1,10 +1,11 @@
 sbaudience:
+260925 home
+- add all table to single product page                          NOT OK
 
-260925
-- kasih satuan ke tiap tabel
-- tambahin tabel horns & thiele
-- bikin comparison page
+260925 work
+- give units to all filters and table                           OK
+- create horns & thiele & HF tables                             OK
+- create comparison page                                        NOT OK
 
 250925
-- kasih pengecekan get-all-products-by-slug.tsx
-- get-one-product.tsx
+- get-one-product.tsx                                           OK
