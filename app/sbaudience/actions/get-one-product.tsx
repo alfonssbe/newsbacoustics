@@ -1,5 +1,5 @@
 import { AllCategory, SingleProducts, SingleProductsSBAudience, Size } from "@/app/types";
-import { HornsSpecificationSBAudience, Specification, SpecificationSBAudience, ThieleSmallParameters } from "@prisma/client";
+import { HornsSpecificationSBAudience, Specification, SpecificationHFSBAudience, SpecificationSBAudience, ThieleSmallParameters } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 const API=`${process.env.NEXT_PUBLIC_ROOT_URL}/${process.env.NEXT_PUBLIC_FETCH_ONE_PRODUCT}`;
@@ -168,6 +168,30 @@ const getProduct = async (path: string, productSlug: string): Promise<SingleProd
       createdAt: new Date(),
       updatedAt: new Date(),
     }
+
+    
+    let hfspecific: SpecificationHFSBAudience = {
+      id : data.SpecificationHFSBAudience?.id ?? "",
+      nominal_impedance  : data.SpecificationHFSBAudience?.nominal_impedance ?? "",
+      minimum_impedance : data.SpecificationHFSBAudience?.minimum_impedance ?? "",
+      aes_power_handling : data.SpecificationHFSBAudience?.aes_power_handling ?? "",
+      maximum_power_handling : data.SpecificationHFSBAudience?.maximum_power_handling ?? "",
+      sensitivity: data.SpecificationHFSBAudience?.sensitivity ?? "",
+      frequency_range: data.SpecificationHFSBAudience?.frequency_range ?? "",
+      voice_coil_diameter : data.SpecificationHFSBAudience?.voice_coil_diameter ?? "",
+      winding_material: data.SpecificationHFSBAudience?.winding_material ?? "",
+      former_material: data.SpecificationHFSBAudience?.former_material ?? "",
+      winding_depth: data.SpecificationHFSBAudience?.winding_depth ?? "",
+      magnetic_gap_depth: data.SpecificationHFSBAudience?.magnetic_gap_depth ?? "",
+      flux_density: data.SpecificationHFSBAudience?.flux_density ?? "",
+      magnet: data.SpecificationHFSBAudience?.magnet ?? "",
+      basket_material : data.SpecificationHFSBAudience?.basket_material ?? "",
+      demodulation: data.SpecificationHFSBAudience?.demodulation ?? "",
+      cone_surround : data.SpecificationHFSBAudience?.cone_surround ?? "",
+      productId: data.SpecificationHFSBAudience?.productId ?? "", 
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
     
     let alldatasheet : string[] = []
     if(data.datasheet){
@@ -193,6 +217,7 @@ const getProduct = async (path: string, productSlug: string): Promise<SingleProd
       specification: specific,
       hornSpecification: hornspecific,
       ThieleSpecification: thielepecific,
+      hfspecification: hfspecific,
       isCustom: data.isCustom,
       isCoax: data.isCoax,
     }
@@ -309,6 +334,28 @@ const getProduct = async (path: string, productSlug: string): Promise<SingleProd
       eta_zero: '',
       ebp: '',
       productId  : '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    hfspecification: {
+      id : '',
+      nominal_impedance  : '',
+      minimum_impedance : '',
+      aes_power_handling : '',
+      maximum_power_handling : '',
+      sensitivity: '',
+      frequency_range: '',
+      voice_coil_diameter : '',
+      winding_material: '',
+      former_material: '',
+      winding_depth: '',
+      magnetic_gap_depth: '',
+      flux_density: '',
+      magnet: '',
+      basket_material : '',
+      demodulation: '',
+      cone_surround : '',
+      productId: '', 
       createdAt: new Date(),
       updatedAt: new Date(),
     },

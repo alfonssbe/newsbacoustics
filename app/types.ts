@@ -1,4 +1,4 @@
-import { HornsSpecificationSBAudience, Specification, SpecificationSBAudience, ThieleSmallParameters } from "@prisma/client";
+import { HornsSpecificationSBAudience, Specification, SpecificationHFSBAudience, SpecificationSBAudience, ThieleSmallParameters } from "@prisma/client";
 
 export interface SubCategoryFilters {
     id: string;
@@ -300,6 +300,7 @@ export interface SingleProductsSBAudience {
     specification: SpecificationSBAudience;
     hornSpecification: HornsSpecificationSBAudience;
     ThieleSpecification: ThieleSmallParameters;
+    hfspecification: SpecificationHFSBAudience;
     isCustom: boolean;
     isCoax: boolean;
 }

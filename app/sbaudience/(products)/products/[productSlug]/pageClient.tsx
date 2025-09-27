@@ -33,6 +33,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Custom_Specification } from "@prisma/client";
 import getProduct from "@/app/sbaudience/actions/get-one-product";
 import SpecificationSBAudienceTable from "@/app/sbaudience/components/single-product-table";
+import SpecificationwithHFSBAudienceTable from "@/app/sbaudience/components/single-product-table-hf";
 
 const all_desc_style = "text-left xl:text-base sm:text-sm text-xs text-foreground p-0 py-1"
 const all_sub_title_style = "text-left font-bold xl:text-2xl lg:text-xl md:text-lg sm:text-md text-foreground"
@@ -54,6 +55,8 @@ export default function SingleProductClient(props: Props) {
     const [loading, setLoading] = useState<boolean>(true);
     const [slideUp, setSlideUp] = useState(false);    // Track slide-up state
     const pathname = usePathname();
+    const [hasSpec, setHasSpec] = useState<boolean>(false)
+    const [hasHFSpec, setHasHFSpec] = useState<boolean>(false)
     useEffect(() => {
     
         const fetchData = async () => {
@@ -81,6 +84,19 @@ export default function SingleProductClient(props: Props) {
                 //     }
                 //     // datasheetCatalogues = await getMultipleDatasheet(params.productSlug)
                 // }
+
+                const specFields = [
+                    'nominal_impedance', 'minimum_impedance', 'aes_power_handling', 'maximum_power_handling', 'sensitivity',  'frequency_range',  'voice_coil_diameter',  'winding_material',  'former_material',  'winding_depth',  'magnetic_gap_depth',  'flux_density',  'magnet',  'basket_material',  'demodulation',  'cone_surround',  'net_air_volume_filled_by_driver',  'spider_profile',  'weather_resistant',  'rdc',  'recommended_crossover_frequency',  'diaphragm_material',  'phase_plug_design',  'total_exit_angle',  'net_air_volume_filled_by_hf_driver',  'nominal_throat_diameter',  'overall_diameter',  'ninety_degrees_mounting_holes_diameter',  'depth',  'net_weight', 'shipping_box', 'gross_weight', 'replacement_diaphragm', 'bolt_circle_diameter', 'baffle_cutout_diameter', 'mounting_depth', 'flange_and_gasket_thickness', 'recone_kit', 'custom_note'
+                ];
+
+                const hfFields = [
+                    'nominal_impedance', 'minimum_impedance', 'aes_power_handling', 'maximum_power_handling', 'sensitivity',  'frequency_range',  'voice_coil_diameter',  'winding_material',  'former_material',  'winding_depth',  'magnetic_gap_depth',  'flux_density',  'magnet',  'basket_material',  'demodulation',  'cone_surround'
+                ];
+
+                //@ts-ignore
+                setHasHFSpec(hfFields.some(field => tempdata.hfspecification?.[field]))
+                //@ts-ignore
+                setHasSpec(specFields.some(field => tempdata.specification?.[field]))
                 setData(tempdata)
                 setDesc(tempdesc)
                 setdatasheetCatalogues(tempdatasheetCatalogues)
@@ -128,6 +144,7 @@ export default function SingleProductClient(props: Props) {
       setLightboxIndexFrequencyResponse(index)
       setLightboxOpenFrequencyResponse(true)
     }
+  
     return (
         (<div className="2xl:px-60 xl:px-40 xl:py-8 lg:py-6 lg:px-12 px-8 py-4">
             {loading && (
@@ -322,56 +339,28 @@ export default function SingleProductClient(props: Props) {
                                     </Link>
                                 </div> */}
                                 
-                                <div className="col-span-2 lg:flex md:hidden flex">
-                                    {data.specification &&
-                                        (data.specification.nominal_impedance != '' ||
-                                        data.specification.minimum_impedance != '' ||
-                                        data.specification.aes_power_handling != '' ||
-                                        data.specification.maximum_power_handling != '' ||
-                                        data.specification.sensitivity != '' ||
-                                        data.specification.frequency_range != '' ||
-                                        data.specification.voice_coil_diameter != '' ||
-                                        data.specification.winding_material != '' ||
-                                        data.specification.former_material != '' ||
-                                        data.specification.winding_depth != '' ||
-                                        data.specification.magnetic_gap_depth != '' ||
-                                        data.specification.flux_density != '' ||
-                                        data.specification.magnet != '' ||
-                                        data.specification.basket_material != '' ||
-                                        data.specification.demodulation != '' ||
-                                        data.specification.cone_surround != '' ||
-                                        data.specification.net_air_volume_filled_by_driver != '' ||
-                                        data.specification.spider_profile != '' ||
-                                        data.specification.weather_resistant != '' ||
-                                        data.specification.rdc != '' ||
-                                        data.specification.recommended_crossover_frequency != '' ||
-                                        data.specification.diaphragm_material != '' ||
-                                        data.specification.phase_plug_design != '' ||
-                                        data.specification.total_exit_angle != '' ||
-                                        data.specification.net_air_volume_filled_by_hf_driver != '' ||
-                                        data.specification.nominal_throat_diameter != '' ||
-                                        data.specification.overall_diameter != '' ||
-                                        data.specification.ninety_degrees_mounting_holes_diameter != ''||
-                                        data.specification.depth != '' ||
-                                        data.specification.net_weight != '' ||
-                                        data.specification.shipping_box != '' ||
-                                        data.specification.gross_weight != '' ||
-                                        data.specification.replacement_diaphragm != '' ||
-                                        data.specification.bolt_circle_diameter != '' ||
-                                        data.specification.baffle_cutout_diameter != '' ||
-                                        data.specification.mounting_depth != '' ||
-                                        data.specification.flange_and_gasket_thickness != '' ||
-                                        data.specification.recone_kit != '' ||
-                                        data.specification.custom_note != '') &&
+                                <div className="col-span-1 lg:flex md:hidden flex">
+                                    {hasSpec ? (
+                                        hasHFSpec ? (
                                             <div className="w-1/2">
-                                                <h2 className={`${all_sub_title_style} pt-8 pr-5`}>
-                                                    Specs:
-                                                </h2>
-                                                <div className="pr-5">
-                                                    {SpecificationSBAudienceTable(data.specification, all_desc_style)}
-                                                </div>
+                                            <h2 className={`${all_sub_title_style} pt-8 pr-5`}>Specs:</h2>
+                                            <div className="pr-5">
+                                                {SpecificationwithHFSBAudienceTable(
+                                                data.specification,
+                                                data.hfspecification,
+                                                all_desc_style
+                                                )}
                                             </div>
-                                    }
+                                            </div>
+                                        ) : (
+                                            <div className="w-1/2">
+                                            <h2 className={`${all_sub_title_style} pt-8 pr-5`}>Specs:</h2>
+                                            <div className="pr-5">
+                                                {SpecificationSBAudienceTable(data.specification, all_desc_style)}
+                                            </div>
+                                            </div>
+                                        )
+                                        ) : null}
                                     {/* {customProps &&
                                         (customProps.air_gap_height != '' ||
                                         customProps.cabinet_material != '' ||
@@ -554,55 +543,27 @@ export default function SingleProductClient(props: Props) {
                                     </Link>
                                 </div> */}
 
-                                {data.specification &&
-                                    (data.specification.nominal_impedance != '' ||
-                                    data.specification.minimum_impedance != '' ||
-                                    data.specification.aes_power_handling != '' ||
-                                    data.specification.maximum_power_handling != '' ||
-                                    data.specification.sensitivity != '' ||
-                                    data.specification.frequency_range != '' ||
-                                    data.specification.voice_coil_diameter != '' ||
-                                    data.specification.winding_material != '' ||
-                                    data.specification.former_material != '' ||
-                                    data.specification.winding_depth != '' ||
-                                    data.specification.magnetic_gap_depth != '' ||
-                                    data.specification.flux_density != '' ||
-                                    data.specification.magnet != '' ||
-                                    data.specification.basket_material != '' ||
-                                    data.specification.demodulation != '' ||
-                                    data.specification.cone_surround != '' ||
-                                    data.specification.net_air_volume_filled_by_driver != '' ||
-                                    data.specification.spider_profile != '' ||
-                                    data.specification.weather_resistant != '' ||
-                                    data.specification.rdc != '' ||
-                                    data.specification.recommended_crossover_frequency != '' ||
-                                    data.specification.diaphragm_material != '' ||
-                                    data.specification.phase_plug_design != '' ||
-                                    data.specification.total_exit_angle != '' ||
-                                    data.specification.net_air_volume_filled_by_hf_driver != '' ||
-                                    data.specification.nominal_throat_diameter != '' ||
-                                    data.specification.overall_diameter != '' ||
-                                    data.specification.ninety_degrees_mounting_holes_diameter != ''||
-                                    data.specification.depth != '' ||
-                                    data.specification.net_weight != '' ||
-                                    data.specification.shipping_box != '' ||
-                                    data.specification.gross_weight != '' ||
-                                    data.specification.replacement_diaphragm != '' ||
-                                    data.specification.bolt_circle_diameter != '' ||
-                                    data.specification.baffle_cutout_diameter != '' ||
-                                    data.specification.mounting_depth != '' ||
-                                    data.specification.flange_and_gasket_thickness != '' ||
-                                    data.specification.recone_kit != '' ||
-                                    data.specification.custom_note != '') &&
-                                    <div className="w-1/2">
-                                        <h2 className={`${all_sub_title_style} pt-8 pr-5`}>
-                                            Specs:
-                                        </h2>
-                                        <div className="pr-5">
-                                            {SpecificationSBAudienceTable(data.specification, all_desc_style)}
-                                        </div>
-                                    </div>
-                                }
+                                {hasSpec ? (
+                                        hasHFSpec ? (
+                                            <div className="w-1/2">
+                                            <h2 className={`${all_sub_title_style} pt-8 pr-5`}>Specs:</h2>
+                                            <div className="pr-5">
+                                                {SpecificationwithHFSBAudienceTable(
+                                                data.specification,
+                                                data.hfspecification,
+                                                all_desc_style
+                                                )}
+                                            </div>
+                                            </div>
+                                        ) : (
+                                            <div className="w-1/2">
+                                            <h2 className={`${all_sub_title_style} pt-8 pr-5`}>Specs:</h2>
+                                            <div className="pr-5">
+                                                {SpecificationSBAudienceTable(data.specification, all_desc_style)}
+                                            </div>
+                                            </div>
+                                        )
+                                        ) : null}
                             </>
                         }
                         

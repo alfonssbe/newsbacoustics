@@ -24,6 +24,7 @@ export async function GET(req: Request, props: { params: Promise<{ brandId: stri
           specificationSBAudience: true,
           hornsspecificationSBAudience: true,
           thieleSmallParametersSBAudience: true,
+          SpecificationHFSBAudience: true,
         }
       });
       return NextResponse.json(product);
